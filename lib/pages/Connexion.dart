@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/main.dart';
+import 'package:flutter_app/pages/ecrire_message.dart';
 import 'package:flutter_app/pages/iphone_1415_accueil.dart';
 import 'package:flutter_app/pages/Liste_Atelier.dart';
 import 'package:flutter_app/pages/iphone_1415_inscription_client.dart';
@@ -220,7 +221,7 @@ class CustomButton extends StatelessWidget {
       onPressed: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => BarMenu()),
+          MaterialPageRoute(builder: (context) => PageMessagerie()),
         );
       },
       style: ElevatedButton.styleFrom(

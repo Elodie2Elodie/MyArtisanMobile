@@ -1,5 +1,4 @@
-import 'dart:ffi';
-
+import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/pages/Liste_Atelier.dart';
 import 'package:flutter_app/pages/detailsAtelier.dart';
@@ -7,59 +6,68 @@ import 'dart:ui';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_app/utils.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_app/pages/widget_commun.dart' as widgetCommun;
 
 import 'listeTenues.dart';
 
-class Accueil_Utilisateur extends StatelessWidget {
+@RoutePage()
+class AccueilUtilisateur extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return 
-    Container(
-      height: 900,
-      child: Container(
-        decoration: BoxDecoration(
-          color: Color(0xFFFFFFFF),
-        ),
+    Scaffold(
+      backgroundColor: Colors.white,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(80.0),
+        child: widgetCommun.CustomAppBar(), // Utilisation du CustomAppBar
+      ),
+      body: Container(
+        height: 900,
         child: Container(
-          padding: EdgeInsets.fromLTRB(0, 0, 3, 0),
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              SizedBox(
-                width: 550,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      margin: EdgeInsets.fromLTRB(12, 0, 12, 10),
-                      child: Align(
-                        alignment: Alignment.topRight,
-                        child: GestureDetector(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              color: Color(0xFFFFFFFF),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Color(0x40000000),
-                                  offset: Offset(0, 10),
-                                  blurRadius: 2,
-                                ),
-                              ],
-                            ),
+          decoration: BoxDecoration(
+            color: Color(0xFFFFFFFF),
+          ),
+          child: Container(
+            padding: EdgeInsets.fromLTRB(0, 0, 3, 0),
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                SizedBox(
+                  width: 550,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        margin: EdgeInsets.fromLTRB(12, 0, 12, 10),
+                        child: Align(
+                          alignment: Alignment.topRight,
+                          child: GestureDetector(
                             child: Container(
-                              width: 35,
-                              height: 35,
-                              padding: EdgeInsets.fromLTRB(8.9, 4, 7.4, 6),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: Color(0xFFFFFFFF),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Color(0x40000000),
+                                    offset: Offset(0, 10),
+                                    blurRadius: 2,
+                                  ),
+                                ],
+                              ),
                               child: Container(
-                                width: 25,
-                                height: 25,
-                                child: SizedBox(
-                                  width: 18.8,
+                                width: 35,
+                                height: 35,
+                                padding: EdgeInsets.fromLTRB(8.9, 4, 7.4, 6),
+                                child: Container(
+                                  width: 25,
                                   height: 25,
-                                  child: SvgPicture.asset(
-                                    'assets/vectors/vector_449_x2.svg',
+                                  child: SizedBox(
+                                    width: 18.8,
+                                    height: 25,
+                                    child: SvgPicture.asset(
+                                      'assets/vectors/vector_449_x2.svg',
+                                    ),
                                   ),
                                 ),
                               ),
@@ -67,308 +75,308 @@ class Accueil_Utilisateur extends StatelessWidget {
                           ),
                         ),
                       ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.fromLTRB(27, 0, 27, 42.5),
-                      child: Align(
-                        alignment: Alignment.topLeft,
-                        child: SizedBox(
-                          width: 314,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                margin: EdgeInsets.fromLTRB(0, 0, 0, 14),
-                                child: Text(
-                                  'Atelier',
-                                  style: GoogleFonts.getFont(
-                                    'GFS Didot',
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 18,
-                                    color: Color(0xFF000000),
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                width: 300, // Tu peux ajuster la largeur de la ligne ici
-                                height: 2,  // Hauteur de la ligne
-                                color: Color(0xFF11477E), // Couleur bleu foncé
-                              ),
-                            ],
-                          )
-      
-                        ),
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.fromLTRB(13, 0, 5, 15),
-                      child: Stack(
-                        children: [
-                          SizedBox(
-                            width: double.infinity,
+                      Container(
+                        margin: EdgeInsets.fromLTRB(27, 0, 27, 42.5),
+                        child: Align(
+                          alignment: Alignment.topLeft,
+                          child: SizedBox(
+                            width: 314,
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Container(
-                                  margin: EdgeInsets.fromLTRB(10.8, 0, 11, 0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Container(
-                                              margin: EdgeInsets.fromLTRB(0, 0, 3.2, 0),
-                                              decoration: BoxDecoration(
-                                                color: Color(0xFF61DA5E),
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    color: Color(0x40000000),
-                                                    offset: Offset(0, 4),
-                                                    blurRadius: 2,
-                                                  ),
-                                                ],
-                                              ),
-                                              child: Container(
-                                                width: 0,
-                                                height: 26.6,
-                                              ),
-                                            ),
-                                            Container(
-                                              margin: EdgeInsets.fromLTRB(0, 2.5, 0, 0),
-                                              child: Row(
-                                                children: [
-                                                  Container(
-                                                    width: 2, // Largeur de la barre verticale
-                                                    height: 20, // Hauteur de la barre verticale
-                                                    color: Colors.black, // Couleur de la barre verticale
-                                                    margin: EdgeInsets.fromLTRB(0, 0, 4,0 ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Container(
-                                              margin: EdgeInsets.fromLTRB(0, 2.5, 0, 0),
-                                              child: Text(
-                                                'Mieux notés',
-                                                style: GoogleFonts.getFont(
-                                                  'GFS Didot',
-                                                  fontWeight: FontWeight.w400,
-                                                  fontSize: 18,
-                                                  color: Color(0xFF11477E),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Container(
-                                        margin: EdgeInsets.fromLTRB(0, 9.5, 0, 0),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Container(
-                                              margin: EdgeInsets.fromLTRB(0, 1, 9, 0),
-                                              child: GestureDetector(
-                                                onTap: () {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(builder: (context) => ListeAteliers()), // Remplacez NouvellePage par la page que vous voulez afficher
-                                                  );
-                                                },
-                                                child: Text(
-                                                  'Voir plus',
-                                                  style: GoogleFonts.getFont(
-                                                    'Inter',
-                                                    fontWeight: FontWeight.w500,
-                                                    fontSize: 14,
-                                                    color: Color(0xFF000000),
-                                                  ),
-                                                ),
-                                              )
-                                            ),
-                                            Container(
-                                              width: 20,
-                                              height: 20,
-                                              child: SizedBox(
-                                                width: 20,
-                                                height: 20,
-                                                child: SvgPicture.asset(
-                                                  'assets/vectors/arrow_right_38_x2.svg',
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
+                                  margin: EdgeInsets.fromLTRB(0, 0, 0, 14),
+                                  child: Text(
+                                    'Atelier',
+                                    style: GoogleFonts.getFont(
+                                      'GFS Didot',
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 18,
+                                      color: Color(0xFF000000),
+                                    ),
                                   ),
                                 ),
-      
-      
+                                Container(
+                                  width: 300, // Tu peux ajuster la largeur de la ligne ici
+                                  height: 2,  // Hauteur de la ligne
+                                  color: Color(0xFF11477E), // Couleur bleu foncé
+                                ),
                               ],
-                            ),
+                            )
+
                           ),
-      
-                        ],
+                        ),
                       ),
-                    ),
-                    Container(
-                      height: 200, // Hauteur du conteneur pour les carrés
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: 10, // Nombre d'éléments dans la liste
-                        itemBuilder: (context, index) {
-                          return CardAtelierHorizontal(indexe: index);
-                        },
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
-                      child: Stack(
-                        children: [
-                          SizedBox(
-                            width: double.infinity,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  margin: EdgeInsets.fromLTRB(0, 0, 11, 0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Container(
-                                              margin: EdgeInsets.fromLTRB(0, 0, 3.2, 0),
-                                              decoration: BoxDecoration(
-                                                color: Color(0xFF61DA5E),
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    color: Color(0x40000000),
-                                                    offset: Offset(0, 4),
-                                                    blurRadius: 2,
+                      Container(
+                        margin: EdgeInsets.fromLTRB(13, 0, 5, 15),
+                        child: Stack(
+                          children: [
+                            SizedBox(
+                              width: double.infinity,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    margin: EdgeInsets.fromLTRB(10.8, 0, 11, 0),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                margin: EdgeInsets.fromLTRB(0, 0, 3.2, 0),
+                                                decoration: BoxDecoration(
+                                                  color: Color(0xFF61DA5E),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Color(0x40000000),
+                                                      offset: Offset(0, 4),
+                                                      blurRadius: 2,
+                                                    ),
+                                                  ],
+                                                ),
+                                                child: Container(
+                                                  width: 0,
+                                                  height: 26.6,
+                                                ),
+                                              ),
+                                              Container(
+                                                margin: EdgeInsets.fromLTRB(0, 2.5, 0, 0),
+                                                child: Row(
+                                                  children: [
+                                                    Container(
+                                                      width: 2, // Largeur de la barre verticale
+                                                      height: 20, // Hauteur de la barre verticale
+                                                      color: Colors.black, // Couleur de la barre verticale
+                                                      margin: EdgeInsets.fromLTRB(0, 0, 4,0 ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              Container(
+                                                margin: EdgeInsets.fromLTRB(0, 2.5, 0, 0),
+                                                child: Text(
+                                                  'Mieux notés',
+                                                  style: GoogleFonts.getFont(
+                                                    'GFS Didot',
+                                                    fontWeight: FontWeight.w400,
+                                                    fontSize: 18,
+                                                    color: Color(0xFF11477E),
                                                   ),
-                                                ],
+                                                ),
                                               ),
-                                              child: Container(
-                                                width: 0,
-                                                height: 26.6,
-                                              ),
-                                            ),
-                                            Container(
-                                              margin: EdgeInsets.fromLTRB(0, 2.5, 0, 0),
-                                              child: Row(
-                                                children: [
-                                                  Container(
-                                                    width: 2, // Largeur de la barre verticale
-                                                    height: 20, // Hauteur de la barre verticale
-                                                    color: Colors.black, // Couleur de la barre verticale
-                                                    margin: EdgeInsets.fromLTRB(0, 0, 4,0 ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                                  Text(
-                                                    'Nos Ateliers',
+                                            ],
+                                          ),
+                                        ),
+                                        Container(
+                                          margin: EdgeInsets.fromLTRB(0, 9.5, 0, 0),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                margin: EdgeInsets.fromLTRB(0, 1, 9, 0),
+                                                child: GestureDetector(
+                                                  onTap: () {
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(builder: (context) => ListeAteliers()), // Remplacez NouvellePage par la page que vous voulez afficher
+                                                    );
+                                                  },
+                                                  child: Text(
+                                                    'Voir plus',
                                                     style: GoogleFonts.getFont(
-                                                      'GFS Didot',
-                                                      fontWeight: FontWeight.w400,
-                                                      fontSize: 18,
-                                                      color: Color(0xFF11477E),
+                                                      'Inter',
+                                                      fontWeight: FontWeight.w500,
+                                                      fontSize: 14,
+                                                      color: Color(0xFF000000),
                                                     ),
                                                   ),
-                                                  SizedBox(width: 8), // Espacement entre le texte et la barre verticale
-      
-                                          ],
-                                        ),
-                                      ),
-                                      Container(
-                                        margin: EdgeInsets.fromLTRB(0, 9.5, 0, 0),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Container(
-                                              margin: EdgeInsets.fromLTRB(0, 1, 9, 0),
-                                              child: GestureDetector(
-                                                onTap: () {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(builder: (context) => ListeAteliers()), // Remplacez NouvellePage par la page que vous voulez afficher
-                                                  );
-                                                },
-                                                child: Text(
-                                                  'Voir plus',
-                                                  style: GoogleFonts.getFont(
-                                                    'Inter',
-                                                    fontWeight: FontWeight.w500,
-                                                    fontSize: 14,
-                                                    color: Color(0xFF000000),
+                                                )
+                                              ),
+                                              Container(
+                                                width: 20,
+                                                height: 20,
+                                                child: SizedBox(
+                                                  width: 20,
+                                                  height: 20,
+                                                  child: SvgPicture.asset(
+                                                    'assets/vectors/arrow_right_38_x2.svg',
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                            Container(
-                                              width: 20,
-                                              height: 20,
-                                              child: SizedBox(
-                                                width: 20,
-                                                height: 20,
-                                                child: SvgPicture.asset(
-                                                  'assets/vectors/arrow_right_38_x2.svg',
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+
+
+                                ],
+                              ),
+                            ),
+
+                          ],
+                        ),
+                      ),
+                      Container(
+                        height: 200, // Hauteur du conteneur pour les carrés
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: 10, // Nombre d'éléments dans la liste
+                          itemBuilder: (context, index) {
+                            return CardAtelierHorizontal(indexe: index);
+                          },
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                        child: Stack(
+                          children: [
+                            SizedBox(
+                              width: double.infinity,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    margin: EdgeInsets.fromLTRB(0, 0, 11, 0),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                margin: EdgeInsets.fromLTRB(0, 0, 3.2, 0),
+                                                decoration: BoxDecoration(
+                                                  color: Color(0xFF61DA5E),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Color(0x40000000),
+                                                      offset: Offset(0, 4),
+                                                      blurRadius: 2,
+                                                    ),
+                                                  ],
+                                                ),
+                                                child: Container(
+                                                  width: 0,
+                                                  height: 26.6,
                                                 ),
                                               ),
-                                            ),
-                                          ],
+                                              Container(
+                                                margin: EdgeInsets.fromLTRB(0, 2.5, 0, 0),
+                                                child: Row(
+                                                  children: [
+                                                    Container(
+                                                      width: 2, // Largeur de la barre verticale
+                                                      height: 20, // Hauteur de la barre verticale
+                                                      color: Colors.black, // Couleur de la barre verticale
+                                                      margin: EdgeInsets.fromLTRB(0, 0, 4,0 ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                                    Text(
+                                                      'Nos Ateliers',
+                                                      style: GoogleFonts.getFont(
+                                                        'GFS Didot',
+                                                        fontWeight: FontWeight.w400,
+                                                        fontSize: 18,
+                                                        color: Color(0xFF11477E),
+                                                      ),
+                                                    ),
+                                                    SizedBox(width: 8), // Espacement entre le texte et la barre verticale
+
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                    ],
+                                        Container(
+                                          margin: EdgeInsets.fromLTRB(0, 9.5, 0, 0),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                margin: EdgeInsets.fromLTRB(0, 1, 9, 0),
+                                                child: GestureDetector(
+                                                  onTap: () {
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(builder: (context) => ListeAteliers()), // Remplacez NouvellePage par la page que vous voulez afficher
+                                                    );
+                                                  },
+                                                  child: Text(
+                                                    'Voir plus',
+                                                    style: GoogleFonts.getFont(
+                                                      'Inter',
+                                                      fontWeight: FontWeight.w500,
+                                                      fontSize: 14,
+                                                      color: Color(0xFF000000),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              Container(
+                                                width: 20,
+                                                height: 20,
+                                                child: SizedBox(
+                                                  width: 20,
+                                                  height: 20,
+                                                  child: SvgPicture.asset(
+                                                    'assets/vectors/arrow_right_38_x2.svg',
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-      
-      
-                              ],
+
+
+                                ],
+                              ),
                             ),
-                          ),
-      
-                        ],
-                      ),
-                    ),
-                    Container(
-                      height: 210,
-                      child: GridView.builder(
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2, // Nombre de carrés par ligne
-                          crossAxisSpacing: 16.0, // Espacement horizontal entre les carrés
-                          mainAxisSpacing: 16.0, // Espacement vertical entre les carrés
-                          childAspectRatio: 1.0, // Ratio largeur/hauteur des carrés
+
+                          ],
                         ),
-                        itemCount: 10, // Nombre total de carrés
-                        itemBuilder: (context, index) {
-                          return CustomImageCard();
-                        },
                       ),
-                    ),
-      
-                  ],
+                      Container(
+                        height: 210,
+                        child: GridView.builder(
+                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2, // Nombre de carrés par ligne
+                            crossAxisSpacing: 16.0, // Espacement horizontal entre les carrés
+                            mainAxisSpacing: 16.0, // Espacement vertical entre les carrés
+                            childAspectRatio: 1.0, // Ratio largeur/hauteur des carrés
+                          ),
+                          itemCount: 10, // Nombre total de carrés
+                          itemBuilder: (context, index) {
+                            return CustomImageCard();
+                          },
+                        ),
+                      ),
+
+                    ],
+                  ),
                 ),
-              ),
-      
-            ],
+
+              ],
+            ),
           ),
         ),
       ),

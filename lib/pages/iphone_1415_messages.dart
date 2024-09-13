@@ -1,92 +1,102 @@
+import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/pages/ecrire_message.dart';
 import 'package:flutter_app/pages/iphone_1415_messages_1.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_app/pages/widget_commun.dart' as widgetCommun;
 
+@RoutePage()
 class ListeMessage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          // Conteneur pour le champ de recherche
-          Positioned(
-            top: 0, // Positionnez-le en haut
-            left: 0,
-            right: 0,
-            child: Container(
-              margin: EdgeInsets.fromLTRB(0,20,0,20), // Ajustez la marge selon besoin
-              child: Center(
-                child: _buildSearchTextField('Rechercher'),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(80.0),
+        child: widgetCommun.CustomAppBar(), // Utilisation du CustomAppBar
+      ),
+      body: Container(
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            // Conteneur pour le champ de recherche
+            Positioned(
+              top: 0, // Positionnez-le en haut
+              left: 0,
+              right: 0,
+              child: Container(
+                margin: EdgeInsets.fromLTRB(0,20,0,20), // Ajustez la marge selon besoin
+                child: Center(
+                  child: _buildSearchTextField('Rechercher'),
+                ),
               ),
             ),
-          ),
-          // Conteneur pour la liste
-          Positioned(
-            top: 100, // Ajustez cette valeur pour commencer la liste sous le champ de recherche
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: ListView(
-              children: [
-                CustomListItem(
-                  imagePath: 'assets/images/wave.png',
-                  title: 'Awa Diouf',
-                  subtitle: 'Non',
-                  time: '6h:00',
-                  onTap: () {
+            // Conteneur pour la liste
+            Positioned(
+              top: 100, // Ajustez cette valeur pour commencer la liste sous le champ de recherche
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: ListView(
+                children: [
+                  CustomListItem(
+                    imagePath: 'assets/images/wave.png',
+                    title: 'Awa Diouf',
+                    subtitle: 'Non',
+                    time: '6h:00',
+                    onTap: () {
 
-                    // Ajoutez votre action ici
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => PageMessagerie()),
-                    );
-                  },
-                ),
-                CustomListItem(
-                  imagePath: 'assets/images/wave.png',
-                  title: 'Awa Diouf',
-                  subtitle: 'Non',
-                  time: '6h:00',
-                  onTap: () {
+                      // Ajoutez votre action ici
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => PageMessagerie()),
+                      );
+                    },
+                  ),
+                  CustomListItem(
+                    imagePath: 'assets/images/wave.png',
+                    title: 'Awa Diouf',
+                    subtitle: 'Non',
+                    time: '6h:00',
+                    onTap: () {
 
-                    // Ajoutez votre action ici
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => PageMessagerie()),
-                    );
-                  },
-                ),
-                CustomListItem(
-                  imagePath: 'assets/images/wave.png',
-                  title: 'Awa Diouf',
-                  subtitle: 'Non',
-                  time: '6h:00',
-                  onTap: () {
+                      // Ajoutez votre action ici
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => PageMessagerie()),
+                      );
+                    },
+                  ),
+                  CustomListItem(
+                    imagePath: 'assets/images/wave.png',
+                    title: 'Awa Diouf',
+                    subtitle: 'Non',
+                    time: '6h:00',
+                    onTap: () {
 
-                    // Ajoutez votre action ici
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => PageMessagerie()),
-                    );
-                  },
-                ),
-                // Ajoutez plus de CustomListItem ici
-              ],
+                      // Ajoutez votre action ici
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => PageMessagerie()),
+                      );
+                    },
+                  ),
+                  // Ajoutez plus de CustomListItem ici
+                ],
+              ),
             ),
-          ),
-          PositionedIconButton(
-            iconPath: 'assets/vectors/vector_139_x2.svg',
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ListeContact()),
-              );
-            },
-          ),
-        ],
+            PositionedIconButton(
+              iconPath: 'assets/vectors/vector_139_x2.svg',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ListeContact()),
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

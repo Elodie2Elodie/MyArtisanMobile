@@ -133,7 +133,7 @@ List<Widget> _navigationItem =[
 ];
 
 final List<Widget> _pages = [
-  Accueil_Utilisateur(), // Exemple de page d'accueil
+  AccueilUtilisateur(), // Exemple de page d'accueil
   Iphone1415ListeCommande(), // Exemple de page iPhone
   ListeMessage(), // Exemple de page de liste
   AjoutCommande(), // Exemple pour la page des paramètres
