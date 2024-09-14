@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_app/pages/widget_commun.dart' as widgetCommun;
 
 class Iphone1415DetailsCommande extends StatelessWidget {
   final String imageUrl;
@@ -25,14 +26,15 @@ class Iphone1415DetailsCommande extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(80.0),
-        child: CustomAppBar(), // Utilisation du CustomAppBar
+        child: widgetCommun.CustomAppBar(), // Utilisation du CustomAppBar
       ),
       body: Container(
-        color: Color(0xFFF0F0F0),
-        padding: EdgeInsets.all(16.0),
+        padding: EdgeInsets.fromLTRB(16.0, 6,16,16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            widgetCommun.Panier(),
+            SizedBox(height: 20),
             Container(
               width: double.infinity,
               height: 200,

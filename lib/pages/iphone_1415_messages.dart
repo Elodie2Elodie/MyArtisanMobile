@@ -1,10 +1,11 @@
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/pages/ecrire_message.dart';
-import 'package:flutter_app/pages/iphone_1415_messages_1.dart';
+import 'package:flutter_app/pages/router.gr.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_app/pages/widget_commun.dart' as widgetCommun;
+import 'package:auto_route/auto_route.dart';
 
 @RoutePage()
 class ListeMessage extends StatelessWidget {
@@ -48,9 +49,8 @@ class ListeMessage extends StatelessWidget {
                     onTap: () {
 
                       // Ajoutez votre action ici
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => PageMessagerie()),
+                      context.router.push(
+                        RouteMessagerie(),
                       );
                     },
                   ),
@@ -60,11 +60,8 @@ class ListeMessage extends StatelessWidget {
                     subtitle: 'Non',
                     time: '6h:00',
                     onTap: () {
-
-                      // Ajoutez votre action ici
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => PageMessagerie()),
+                      context.router.push(
+                        RouteMessagerie(),
                       );
                     },
                   ),
@@ -74,11 +71,8 @@ class ListeMessage extends StatelessWidget {
                     subtitle: 'Non',
                     time: '6h:00',
                     onTap: () {
-
-                      // Ajoutez votre action ici
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => PageMessagerie()),
+                      context.router.push(
+                        RouteMessagerie(),
                       );
                     },
                   ),
@@ -89,9 +83,8 @@ class ListeMessage extends StatelessWidget {
             PositionedIconButton(
               iconPath: 'assets/vectors/vector_139_x2.svg',
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ListeContact()),
+                context.router.push(
+                  ListeContact(),
                 );
               },
             ),

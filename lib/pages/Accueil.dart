@@ -1,11 +1,12 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/pages/router.gr.dart';
 import 'dart:ui';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_app/utils.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter_app/pages/Connexion.dart';
 
-class Acceuil extends StatelessWidget {
+
+@RoutePage()
+class Accueil extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return 
@@ -38,18 +39,7 @@ class Acceuil extends StatelessWidget {
                   ),
                 ),
               ),
-              Container(
-                margin: EdgeInsets.fromLTRB(6.7, 0, 0, 11),
-                child: Text(
-                  'Je n’ai pas de compte !',
-                  style: GoogleFonts.getFont(
-                    'GFS Didot',
-                    fontWeight: FontWeight.w400,
-                    fontSize: 16,
-                    color: Color(0xFF000000),
-                  ),
-                ),
-              ),
+
               Container(
                 child: Container(
                   decoration: BoxDecoration(
@@ -57,10 +47,9 @@ class Acceuil extends StatelessWidget {
                     borderRadius: BorderRadius.circular(15),
                   ),
                   child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Connexion()),
+                    onTap: (){
+                      context.router.push(
+                        Connexion(),
                       );
                     },
                     child: Container(

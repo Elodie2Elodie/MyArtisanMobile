@@ -1,7 +1,12 @@
+import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_app/pages/router.gr.dart';
+import 'package:flutter_app/pages/widget_commun.dart' as widgetCommun;
+import 'package:auto_route/auto_route.dart';
 
+@RoutePage()
 class ListeContact extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -9,7 +14,7 @@ class ListeContact extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(80.0),
-        child: CustomAppBar(), // Utilisation du CustomAppBar
+        child: widgetCommun.CustomAppBar(), // Utilisation du CustomAppBar
       ),
       body: Stack(
         clipBehavior: Clip.none,
@@ -85,7 +90,11 @@ class ContactItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: (){
+        context.router.push(
+          RouteMessagerie(),
+        );
+      },
       child: Container(
         margin: EdgeInsets.fromLTRB(9, 20, 20, 0),
         child: Row(

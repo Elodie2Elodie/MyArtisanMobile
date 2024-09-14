@@ -1,115 +1,81 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/pages/Liste_Atelier.dart';
 import 'dart:ui';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_app/utils.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_app/pages/widget_commun.dart' as widgetCommun;
 
-class ListeAteliers extends StatelessWidget {
+@RoutePage()
+class ListeAtelier extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return
       Scaffold(
+        backgroundColor: Colors.white,
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(80.0),
+          child: widgetCommun.CustomAppBar(), // Utilisation du CustomAppBar
+        ),
         body: Container(
-          decoration: BoxDecoration(
-            color: Color(0xFFFFFFFF),
-          ),
-          child: Container(
-            padding: EdgeInsets.fromLTRB(0, 5, 3, 0),
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: [
-                SizedBox(
-                  width: 550,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CustomAppBar(),
-                      Container(
-                        margin: EdgeInsets.fromLTRB(12, 0, 12, 10),
-                        child: Align(
-                          alignment: Alignment.topRight,
-                          child: GestureDetector(
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                color: Color(0xFFFFFFFF),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Color(0x40000000),
-                                    offset: Offset(0, 10),
-                                    blurRadius: 2,
-                                  ),
-                                ],
-                              ),
-                              child: Container(
-                                width: 35,
-                                height: 35,
-                                padding: EdgeInsets.fromLTRB(8.9, 4, 7.4, 6),
-                                child: Container(
-                                  width: 25,
-                                  height: 25,
-                                  child: SizedBox(
-                                    width: 18.8,
-                                    height: 25,
-                                    child: SvgPicture.asset(
-                                      'assets/vectors/vector_449_x2.svg',
-                                    ),
-                                  ),
+          padding: EdgeInsets.fromLTRB(0, 5, 3, 0),
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              SizedBox(
+                width: 548,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    widgetCommun.Panier(),
+                    Container(
+                      margin: EdgeInsets.fromLTRB(27, 0, 27, 17.5),
+                      child: Align(
+                        alignment: Alignment.topLeft,
+                        child: SizedBox(
+                            width: 314,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                ContainerTitre(titre: 'Ateliers'),
+                                Container(
+                                  width: 300, // Tu peux ajuster la largeur de la ligne ici
+                                  height: 2,  // Hauteur de la ligne
+                                  color: Color(0xFF11477E), // Couleur bleu foncé
                                 ),
-                              ),
-                            ),
-                          ),
+                              ],
+                            )
+
                         ),
                       ),
-                      Container(
-                        margin: EdgeInsets.fromLTRB(27, 0, 27, 42.5),
-                        child: Align(
-                          alignment: Alignment.topLeft,
-                          child: SizedBox(
-                              width: 314,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  ContainerTitre(titre: 'Ateliers'),
-                                  Container(
-                                    width: 300, // Tu peux ajuster la largeur de la ligne ici
-                                    height: 2,  // Hauteur de la ligne
-                                    color: Color(0xFF11477E), // Couleur bleu foncé
-                                  ),
-                                ],
-                              )
-        
-                          ),
+                    ),
+                    Container(
+                      child: HorizontalButtonList(),
+                    ),
+                    Container(
+                      height: 470,
+                      child: GridView.builder(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2, // Nombre de carrés par ligne
+                          crossAxisSpacing: 16.0, // Espacement horizontal entre les carrés
+                          mainAxisSpacing: 16.0, // Espacement vertical entre les carrés
+                          childAspectRatio: 1.0, // Ratio largeur/hauteur des carrés
                         ),
+                        itemCount: 10, // Nombre total de carrés
+                        itemBuilder: (context, index) {
+                          return CustomImageCard(indexe: index,adressseAtelier: 'Ngor',);
+                        },
                       ),
-                      Container(
-                        child: HorizontalButtonList(),
-                      ),
-                      Container(
-                        height: 515,
-                        child: GridView.builder(
-                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2, // Nombre de carrés par ligne
-                            crossAxisSpacing: 16.0, // Espacement horizontal entre les carrés
-                            mainAxisSpacing: 16.0, // Espacement vertical entre les carrés
-                            childAspectRatio: 1.0, // Ratio largeur/hauteur des carrés
-                          ),
-                          itemCount: 10, // Nombre total de carrés
-                          itemBuilder: (context, index) {
-                            return CustomImageCard(indexe: index,adressseAtelier: 'Ngor',);
-                          },
-                        ),
-                      ),
-        
-                    ],
-                  ),
+                    ),
+
+                  ],
                 ),
-        
-              ],
-            ),
+              ),
+
+            ],
           ),
         ),
       );
@@ -368,7 +334,7 @@ class HorizontalButtonList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: EdgeInsets.all(4.0),
+        padding: EdgeInsets.fromLTRB(4.0, 2.0,2.0,4.0),
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(

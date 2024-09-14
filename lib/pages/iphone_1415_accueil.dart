@@ -1,10 +1,9 @@
 import 'package:auto_route/annotations.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/pages/Liste_Atelier.dart';
-import 'package:flutter_app/pages/detailsAtelier.dart';
+import 'package:flutter_app/pages/router.gr.dart' as gr;
 import 'dart:ui';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_app/utils.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_app/pages/widget_commun.dart' as widgetCommun;
 
@@ -38,43 +37,7 @@ class AccueilUtilisateur extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        margin: EdgeInsets.fromLTRB(12, 0, 12, 10),
-                        child: Align(
-                          alignment: Alignment.topRight,
-                          child: GestureDetector(
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                color: Color(0xFFFFFFFF),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Color(0x40000000),
-                                    offset: Offset(0, 10),
-                                    blurRadius: 2,
-                                  ),
-                                ],
-                              ),
-                              child: Container(
-                                width: 35,
-                                height: 35,
-                                padding: EdgeInsets.fromLTRB(8.9, 4, 7.4, 6),
-                                child: Container(
-                                  width: 25,
-                                  height: 25,
-                                  child: SizedBox(
-                                    width: 18.8,
-                                    height: 25,
-                                    child: SvgPicture.asset(
-                                      'assets/vectors/vector_449_x2.svg',
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
+                      widgetCommun.Panier(),
                       Container(
                         margin: EdgeInsets.fromLTRB(27, 0, 27, 42.5),
                         child: Align(
@@ -185,9 +148,8 @@ class AccueilUtilisateur extends StatelessWidget {
                                                 margin: EdgeInsets.fromLTRB(0, 1, 9, 0),
                                                 child: GestureDetector(
                                                   onTap: () {
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(builder: (context) => ListeAteliers()), // Remplacez NouvellePage par la page que vous voulez afficher
+                                                    context.router.push(
+                                                      gr.ListeAtelier(),
                                                     );
                                                   },
                                                   child: Text(
@@ -313,9 +275,8 @@ class AccueilUtilisateur extends StatelessWidget {
                                                 margin: EdgeInsets.fromLTRB(0, 1, 9, 0),
                                                 child: GestureDetector(
                                                   onTap: () {
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(builder: (context) => ListeAteliers()), // Remplacez NouvellePage par la page que vous voulez afficher
+                                                    context.router.push(
+                                                     gr.ListeAtelier(),
                                                     );
                                                   },
                                                   child: Text(
@@ -401,6 +362,11 @@ class CustomImageCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      onTap: (){
+        context.router.push(
+            gr.DetailsAtelierRoute()
+        );
+      } ,
       child: Column(
         children: [
           Expanded(
@@ -450,9 +416,8 @@ class CardAtelierHorizontal extends StatelessWidget {
               width: 140, // Largeur de chaque carré
               child:   GestureDetector(
                 onTap: (){
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => DetailsAtelierPage()),
+                  context.router.push(
+                    gr.DetailsAtelierRoute()
                   );
                 },
                 child: Container(

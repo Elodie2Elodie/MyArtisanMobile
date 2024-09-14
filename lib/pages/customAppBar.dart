@@ -52,15 +52,12 @@ class CustomAppBar extends StatelessWidget {
                 // Gérer la sélection du menu ici
                 if (value == 'logout') {
                   // Logique de déconnexion
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Connexion()),
-                  );
+
                 } else if (value == 'profile') {
                   // Rediriger vers la page de profil
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Acceuil()), // Remplacez ProfilePage par votre page cible
+                    MaterialPageRoute(builder: (context) => Accueil()), // Remplacez ProfilePage par votre page cible
                   );
                 }
               },

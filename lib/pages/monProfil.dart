@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_app/pages/widget_commun.dart' as widgetCommun;
+import 'package:auto_route/auto_route.dart';
 
+@RoutePage()
 class MonProfil extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -16,6 +18,7 @@ class MonProfil extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            widgetCommun.Panier(),
             // Avatar et nom de l'utilisateur
             Center(
               child: CircleAvatar(

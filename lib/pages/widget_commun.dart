@@ -1,14 +1,13 @@
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/pages/Accueil.dart';
+import 'package:flutter_app/pages/router.gr.dart';
 import 'dart:ui';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:auto_route/auto_route.dart';
 
-import 'iphone_1415_accueil.dart';
-import 'iphone_1415_liste_commande.dart';
-import 'iphone_1415_messages.dart';
-import 'iphone_1415_messages_avec_clavier.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
 
 class CustomAppBar extends StatelessWidget {
   final String logoPath;
@@ -52,15 +51,9 @@ class CustomAppBar extends StatelessWidget {
             PopupMenuButton<String>(
               onSelected: (value) {
                 if (value == 'logout') {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => Acceuil()),
-                  );
+                  context.router.replace(Accueil());
                 } else if (value == 'profile') {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Acceuil()),
-                  );
+                  Accueil();
                 }
               },
               icon: Row(
@@ -79,10 +72,6 @@ class CustomAppBar extends StatelessWidget {
                 ],
               ),
               itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                PopupMenuItem<String>(
-                  value: 'profile',
-                  child: Text('Voir le profil'),
-                ),
                 PopupMenuItem<String>(
                   value: 'logout',
                   child: Text('Déconnexion'),
@@ -117,40 +106,61 @@ class ContainerTitre extends StatelessWidget {
   }
 }
 
-class BarMenu extends StatefulWidget {
-  const BarMenu({super.key});
+
+class Panier extends StatefulWidget {
+  const Panier({super.key});
 
   @override
-  State<BarMenu> createState() => _BarMenuState();
+  State<Panier> createState() => _PanierState();
 }
-int _currentIndex = 0;
 
-List<Widget> _navigationItem =[
-  Icon(Icons.home),
-  Icon(Icons.list),
-  Icon(Icons.message_rounded),
-  Icon(Icons.settings),
-];
-
-final List<Widget> _pages = [
-  AccueilUtilisateur(), // Exemple de page d'accueil
-  Iphone1415ListeCommande(), // Exemple de page iPhone
-  ListeMessage(), // Exemple de page de liste
-  AjoutCommande(), // Exemple pour la page des paramètres
-];
-
-class _BarMenuState extends State<BarMenu> {
+class _PanierState extends State<Panier> {
   @override
   Widget build(BuildContext context) {
-    return CurvedNavigationBar(
-        items: _navigationItem,
-        backgroundColor: Colors.white,
-        buttonBackgroundColor: Colors.blue,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index; // Met à jour l'index courant
-          });
-        },
+    return Container(
+      margin: EdgeInsets.fromLTRB(12, 0, 12, 10),
+      child: Align(
+        alignment: Alignment.topRight,
+        child: GestureDetector(
+          onTap: () {
+            // Utilisez PanierRoute pour naviguer vers la page Panier
+            context.router.push(
+              Panierr(),
+            );
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5),
+              color: Color(0xFFFFFFFF),
+              boxShadow: [
+                BoxShadow(
+                  color: Color(0x40000000),
+                  offset: Offset(0, 10),
+                  blurRadius: 2,
+                ),
+              ],
+            ),
+            child: Container(
+              width: 35,
+              height: 35,
+              padding: EdgeInsets.fromLTRB(8.9, 4, 7.4, 6),
+              child: Container(
+                width: 25,
+                height: 25,
+                child: SizedBox(
+                  width: 18.8,
+                  height: 25,
+                  child: SvgPicture.asset(
+                    'assets/vectors/vector_449_x2.svg',
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
+
+

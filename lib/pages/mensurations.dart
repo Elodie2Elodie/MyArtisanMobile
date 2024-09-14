@@ -1,23 +1,27 @@
+import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_app/utils.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_app/pages/widget_commun.dart' as widgetCommun;
 
+@RoutePage()
 class Mensurations extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(80.0), // Hauteur de l'AppBar
-        child: CustomAppBar(), // AppBar personnalisé déjà créé
+        child: widgetCommun.CustomAppBar(), // AppBar personnalisé déjà créé
       ),
       backgroundColor:Color(0xFFFFFFFF) ,
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+          children:[
+              widgetCommun.Panier(),
             VerticalBarWithText(text: 'Mensurations Générales'),
             SizedBox(height: 8),
             _buildTextField("Tour de poitrine"),
@@ -44,13 +48,16 @@ class Mensurations extends StatelessWidget {
 
             SizedBox(height: 24),
 
-            ElevatedButton(
-              onPressed: () {
-                // Logique pour soumettre les mensurations
-              },
-              child: Text("Soumettre"),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF0D47A1), // Couleur du bouton
+            Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  // Logique pour soumettre les mensurations
+                },
+                child: Text("Soumettre"),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFF0D47A1), 
+                  foregroundColor: Colors.white// Couleur du bouton
+                ),
               ),
             ),
           ],

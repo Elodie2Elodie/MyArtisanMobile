@@ -1,9 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/pages/securite.dart';
+import 'package:flutter_app/pages/router.gr.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_app/pages/widget_commun.dart' as widgetCommun;
-import 'monProfil.dart';
 
 @RoutePage()
 class PageParametres extends StatelessWidget {
@@ -16,12 +15,12 @@ class PageParametres extends StatelessWidget {
         child: widgetCommun.CustomAppBar(), // Utilisation du CustomAppBar
       ),
       body: Container(
-
         child: Padding(
           padding: EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              widgetCommun.Panier(),
               // Titre des paramètres
               Text(
                 'Paramètres',
@@ -31,7 +30,7 @@ class PageParametres extends StatelessWidget {
                   color: Color(0xFF0D47A1), // Bleu foncé
                 ),
               ),
-              SizedBox(height: 80),
+              SizedBox(height: 40),
               // Liste des paramètres
               Expanded(
                 child: ListView(
@@ -42,10 +41,9 @@ class PageParametres extends StatelessWidget {
                       subtitle: 'Gérer votre compte',
                       onTap: () {
                         // Action lorsque le paramètre est sélectionné
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => MonProfil()),
-                          );
+                        context.router.push(
+                          MonProfil(),
+                        );
                       },
                     ),
 
@@ -57,9 +55,8 @@ class PageParametres extends StatelessWidget {
                       subtitle: 'Paramètres de sécurité',
                       onTap: () {
                         // Action lorsque le paramètre est sélectionné
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => PageSecurite()),
+                        context.router.push(
+                          RouteSecurite(),
                         );
                       },
                     ),
@@ -68,11 +65,12 @@ class PageParametres extends StatelessWidget {
 
                     _buildSettingItem(
                       icon: Icons.help,
-                      title: 'Aide',
-                      subtitle: 'Obtenir de l\'aide',
+                      title: 'Mensuration',
+                      subtitle: 'Renseigner ses mensurations.',
                       onTap: () {
-                        // Action lorsque le paramètre est sélectionné
-                        print('Aide');
+                        context.router.push(
+                         Mensurations(),
+                        );
                       },
                     ),
 

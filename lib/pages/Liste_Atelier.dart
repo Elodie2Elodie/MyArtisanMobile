@@ -16,7 +16,7 @@ class Liste_Tenues extends StatelessWidget {
         preferredSize: Size.fromHeight(80.0),
         child: widgetCommun.CustomAppBar(), // Utilisation du CustomAppBar
       ),
-      bottomNavigationBar: widgetCommun.BarMenu(), // Ajout de la barre de menu ici
+     // Ajout de la barre de menu ici
       body: Container(
         decoration: BoxDecoration(
           color: Color(0xFFFFFFFF),
@@ -40,7 +40,7 @@ class Liste_Tenues extends StatelessWidget {
                           onTap: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => Panier()),
+                              MaterialPageRoute(builder: (context) => Panierr()),
                             );
                           },
                           child: Container(

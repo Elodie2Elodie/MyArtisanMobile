@@ -1,7 +1,10 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/pages/router.gr.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_app/pages/widget_commun.dart' as widgetCommun;
 
+@RoutePage()
 class PageSecurite extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -16,6 +19,7 @@ class PageSecurite extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            widgetCommun.Panier(),
             // Titre des paramètres de sécurité
             Text(
               'Paramètres de sécurité',
@@ -33,27 +37,20 @@ class PageSecurite extends StatelessWidget {
               subtitle: 'Mettre à jour votre mot de passe',
               onTap: () {
                 // Action lorsque le paramètre est sélectionné
-                print('Changer le mot de passe');
+                context.router.push(
+                  ChangerMotDePasse(),
+                );
               },
             ),
             SizedBox(height: 30),
             _buildSecurityItem(
               icon: Icons.lock,
               title: 'Changer l\'email',
-              subtitle: 'Mettre à jour votre mot de passe',
+              subtitle: 'Mettre à jour votre email',
               onTap: () {
-                // Action lorsque le paramètre est sélectionné
-                print('Changer le mot de passe');
-              },
-            ),
-            SizedBox(height: 30),
-            _buildSecurityItem(
-              icon: Icons.lock,
-              title: 'Changer le numéro de téléphone',
-              subtitle: 'Mettre à jour votre mot de passe',
-              onTap: () {
-                // Action lorsque le paramètre est sélectionné
-                print('Changer le mot de passe');
+                context.router.push(
+                  ChangerEmail(),
+                );
               },
             ),
             SizedBox(height: 30),

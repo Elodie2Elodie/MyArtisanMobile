@@ -1,7 +1,9 @@
+import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/pages/widget_commun.dart' as widgetCommun;
 
 
+@RoutePage()
 class DetailsAtelierPage extends StatefulWidget {
   @override
   _DetailsAtelierPageState createState() => _DetailsAtelierPageState();

@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:auto_route/auto_route.dart';
+import 'package:flutter_app/pages/widget_commun.dart' as widgetCommun;
 
-class Panier extends StatefulWidget {
+@RoutePage()
+class Panierr extends StatefulWidget {
   @override
   _ScrollableListWithQuantitiesState createState() => _ScrollableListWithQuantitiesState();
 }
 
-class _ScrollableListWithQuantitiesState extends State<Panier> {
+class _ScrollableListWithQuantitiesState extends State<Panierr> {
   List<bool> isCheckedList = List<bool>.filled(10, false); // Assuming 10 items
 
   @override
@@ -14,7 +17,7 @@ class _ScrollableListWithQuantitiesState extends State<Panier> {
       backgroundColor: Colors.white,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(80.0),
-        child: CustomAppBar(), // Utilisation du CustomAppBar
+        child: widgetCommun.CustomAppBar(), // Utilisation du CustomAppBar
       ),
       body: Column(
         children: [

@@ -1,9 +1,10 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_app/utils.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_app/pages/router.gr.dart' as gr;
 
+
+@RoutePage()
 class Inscription extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -15,7 +16,7 @@ class Inscription extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
-              margin: EdgeInsets.fromLTRB(0, 50, 0, 19),
+              margin: EdgeInsets.fromLTRB(0, 20, 0,9),
               child: Container(
                 decoration: BoxDecoration(
                   image: DecorationImage(
@@ -37,7 +38,7 @@ class Inscription extends StatelessWidget {
             Container(
               width: 320,
               margin: EdgeInsets.symmetric(vertical: 5.0),
-              child: _buildTextField("Identifiant", Icons.person),
+              child: _buildTextField("Nom & prénom", Icons.person),
             ),
             Container(
               width: 320,
@@ -59,11 +60,32 @@ class Inscription extends StatelessWidget {
               margin: EdgeInsets.symmetric(vertical: 5.0),
               child: _buildTextField("Resaisisser le mot de passe", Icons.lock),
             ),
-            Container(
-              margin: EdgeInsets.symmetric(vertical: 15.0),
-              child: CustomButton(buttonText: 'S\'inscrire'),
+            GestureDetector(
+              onTap: (){
+                context.router.push(
+                  gr.Inscription(),
+                );
+              },
+              child: Container(
+                margin: EdgeInsets.symmetric(vertical: 15.0),
+                child: CustomButton(buttonText: 'S\'inscrire'),
+              ),
             ),
-            Text('J\ai déjà un compte'),
+            GestureDetector(
+                onTap: (){
+                  context.router.push(
+                    gr.Connexion(),
+                  );
+                },
+                child: Text(
+                    'J\ai déjà un compte',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Color(0xFF00FF00), // Vert fluo
+                  ),
+                )
+
+            ),
           ],
         ),
       ),

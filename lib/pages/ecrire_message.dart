@@ -1,11 +1,15 @@
+import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/pages/router.gr.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter_app/pages/widget_commun.dart' as widgetCommun;
 // appBar: PreferredSize(
 // preferredSize: Size.fromHeight(80.0),
 // child: widgetCommun.CustomAppBar(), // Utilisation du CustomAppBar
 // ),
 
+@RoutePage()
 class PageMessagerie extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -131,20 +135,22 @@ class MessageBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: isSentByMe ? Alignment.centerRight : Alignment.centerLeft,
-      child: Container(
-        width: 200,
-        margin: EdgeInsets.symmetric(vertical: 8.0),
-        padding: EdgeInsets.all(12.0),
-        decoration: BoxDecoration(
-          color: isSentByMe ? Colors.greenAccent : Colors.grey[200],
-          borderRadius: BorderRadius.circular(15.0),
-        ),
-        child: Text(
-          message,
-          style: GoogleFonts.roboto(
-            color: isSentByMe ? Colors.white : Colors.black87,
+    return GestureDetector(
+      child: Align(
+        alignment: isSentByMe ? Alignment.centerRight : Alignment.centerLeft,
+        child: Container(
+          width: 200,
+          margin: EdgeInsets.symmetric(vertical: 8.0),
+          padding: EdgeInsets.all(12.0),
+          decoration: BoxDecoration(
+            color: isSentByMe ? Colors.greenAccent : Colors.grey[200],
+            borderRadius: BorderRadius.circular(15.0),
+          ),
+          child: Text(
+            message,
+            style: GoogleFonts.roboto(
+              color: isSentByMe ? Colors.white : Colors.black87,
+            ),
           ),
         ),
       ),

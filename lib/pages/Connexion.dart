@@ -1,14 +1,10 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/main.dart';
-import 'package:flutter_app/pages/ecrire_message.dart';
-import 'package:flutter_app/pages/iphone_1415_accueil.dart';
-import 'package:flutter_app/pages/Liste_Atelier.dart';
-import 'package:flutter_app/pages/iphone_1415_inscription_client.dart';
-import 'dart:ui';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_app/utils.dart';
-import 'package:google_fonts/google_fonts.dart';
 
+import 'package:flutter_app/pages/router.gr.dart';
+import 'dart:ui';
+
+@RoutePage()
 class Connexion extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -55,9 +51,8 @@ class Connexion extends StatelessWidget {
             ),
             GestureDetector(
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Inscription()),
+                context.router.push(
+                  Inscription(),
                 );
               },
               child: Text(
@@ -99,87 +94,6 @@ class Connexion extends StatelessWidget {
 
 }
 
-class CustomAppBar extends StatelessWidget {
-  final String logoPath; // Chemin du logo
-
-  const CustomAppBar({super.key, this.logoPath = 'assets/images/rectangle_34625156.png'});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.fromLTRB(0, 0, 0, 14),
-      decoration: BoxDecoration(
-        border: Border.all(color: Color(0xFFFFFFFF)),
-        color: Color(0xFFFFFFFF),
-      ),
-      child: Container(
-        padding: EdgeInsets.fromLTRB(20, 15, 0, 2),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Logo carré avec bords arrondis à gauche
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8.0), // Rayon pour les bords arrondis
-              child: Image.asset(
-                logoPath, // Chemin de votre logo
-                height: 60, // Ajustez la taille selon vos besoins
-                width: 60,
-                fit: BoxFit.cover,
-              ),
-            ),
-            Spacer(),
-            // Icône de notification
-            IconButton(
-              icon: Icon(
-                Icons.notifications,
-                color: Colors.black,
-                size: 24,
-              ),
-              onPressed: () {
-                // Action lorsque l'icône de notification est pressée
-              },
-            ),
-            // Icône de l'utilisateur avec menu déroulant
-            PopupMenuButton<String>(
-              onSelected: (value) {
-                // Gérer la sélection du menu ici
-                if (value == 'logout') {
-                  // Logique de déconnexion
-                }
-              },
-              icon: Row(
-                children: [
-                  Icon(
-                    Icons.person,
-                    color: Colors.black,
-                    size: 24,
-                  ),
-                  SizedBox(width: 4),
-                  Icon(
-                    Icons.arrow_drop_down,
-                    color: Colors.black,
-                    size: 24,
-                  ),
-                ],
-              ),
-              itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                PopupMenuItem<String>(
-                  value: 'profile',
-                  child: Text('Voir le profil'),
-                ),
-                PopupMenuItem<String>(
-                  value: 'logout',
-                  child: Text('Déconnexion'),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 class TransparentTextContainer extends StatelessWidget {
   final String texte; // Paramètre texte
@@ -219,10 +133,9 @@ class CustomButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => PageMessagerie()),
-        );
+          context.router.push(
+            AccueilUtilisateur(),
+          );
       },
       style: ElevatedButton.styleFrom(
         backgroundColor: Color(0xFF0D47A1), // Couleur de fond bleu foncé
