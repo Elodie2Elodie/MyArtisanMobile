@@ -1,48 +1,132 @@
+import 'dart:convert';
+import 'package:auto_route/auto_route.dart';
+import 'package:flutter_app/Models/avis.dart';
+import 'package:flutter_app/pages/api_service.dart';
+import 'package:flutter_app/pages/router.gr.dart';
+import 'package:http/http.dart' as http;
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/Models/atelier.dart';
 import 'package:flutter_app/pages/widget_commun.dart' as widgetCommun;
+import 'package:url_launcher/url_launcher.dart';
 
+import '../Models/Tenues.dart';
 
 @RoutePage()
 class DetailsAtelierPage extends StatefulWidget {
+  final String atelierId; // Ajouter l'ID de l'atelier comme paramètre
+  late final Atelier atelier;
+  late final List<Commentaire> commentares;
+
+  DetailsAtelierPage({required this.atelierId, required this.atelier});
   @override
   _DetailsAtelierPageState createState() => _DetailsAtelierPageState();
 }
 
 class _DetailsAtelierPageState extends State<DetailsAtelierPage> {
+  List tenues = [];
+  List commentaires =[];
+
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchTenues();
+    _fetchAtelier();
+    fetchCommentaires();
+  }
+
+  Future<void> _fetchAtelier() async {
+    try {
+      final response = await http.get(Uri.parse('http://192.168.1.5:8000/mobile/atelier/${widget.atelierId}'));
+
+      if (response.statusCode == 200) {
+        final atelierJson = json.decode(response.body);
+        setState(() {
+          widget.atelier = Atelier.fromJson(atelierJson);
+        });
+      } else {
+        throw Exception('Erreur lors du chargement des informations de l\'atelier');
+      }
+    } catch (e) {
+      print('Erreur: ${e.toString()}');
+    }
+  }
+
+  Future<void> _fetchTenues() async {
+    try {
+      // Remplace par la méthode ou l'API que tu utilises pour obtenir les tenues
+      // Exemple d'appel d'API (tu peux utiliser `http` ou `dio` par exemple)
+      final response = await http.get(Uri.parse('http://192.168.1.5:8000/mobile/tenues/${widget.atelierId}'));
+
+      print(response.body);
+      if (response.statusCode == 200) {
+        // Parser les tenues reçues et les convertir en objets Tenue
+        List<dynamic> tenuesJson = json.decode(response.body);
+
+        setState(() {
+          tenues = tenuesJson.map((json) => Tenue.fromJson(json)).toList();
+        });
+      } else {
+        throw Exception('Erreur lors du chargement des tenues');
+      }
+    } catch (e) {
+      print('Erreur: ${e.toString()}');
+    }
+
+  }
+
+  Future<void> fetchCommentaires() async {
+    try {
+      final response = await http.get(Uri.parse('http://192.168.1.5:8000/mobile/atelier/avis/${widget.atelierId}'));
+
+      if (response.statusCode == 200) {
+        List<dynamic> commentairesJson = json.decode(response.body);
+        print(response.body);
+        setState(() {
+          commentaires= commentairesJson.map((json) => Commentaire.fromJson(json)).toList();
+        });
+
+      } else {
+        throw Exception('Erreur lors du chargement des commentaires');
+      }
+    } catch (e) {
+      print('Erreur: ${e.toString()}');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white,
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(80.0),
-          child: widgetCommun.CustomAppBar(), // Utilisation du CustomAppBar
-        ),
-
+      backgroundColor: Colors.white,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(80.0),
+        child: widgetCommun.CustomAppBar(), // Utilisation du CustomAppBar
+      ),
+      // Utilise les tenues récupérées ici
       body: Column(
         children: [
-          // Conteneur pour la partie Détails de l'Atelier
           Expanded(
             child: DefaultTabController(
               length: 2,
               child: Column(
                 children: [
                   Container(
-                    color: Colors.blue, // Bleu foncé
+                    color: Colors.blue,
                     child: TabBar(
                       labelColor: Colors.black,
                       tabs: [
                         Tab(text: 'Détails Atelier'),
                         Tab(text: 'Tenues'),
                       ],
-                      indicatorColor: Colors.greenAccent, // Vert fluo pour l'indicateur
+                      indicatorColor: Colors.greenAccent,
                     ),
                   ),
                   Expanded(
                     child: TabBarView(
                       children: [
-                        _buildDetailsAtelierSection(),
-                        _buildTenuesSection(),
+                        _buildDetailsAtelierSection(widget.atelier),
+                        _buildTenuesSection(), // La section qui affiche les tenues
                       ],
                     ),
                   ),
@@ -52,10 +136,56 @@ class _DetailsAtelierPageState extends State<DetailsAtelierPage> {
           ),
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          context.router.push(
+              AjoutCommande(atelierId: widget.atelierId)
+          );
+
+        },
+        child: Icon(Icons.add, color: Colors.white, size: 30),
+        backgroundColor: Colors.blue,
+        elevation: 8.0, // Ombre noire
+      ),
     );
   }
 
-  Widget _buildDetailsAtelierSection() {
+  Widget _buildTenuesSection() {
+    if (tenues.isEmpty) {
+      return Center(child: CircularProgressIndicator()); // Indicateur de chargement
+    }
+
+    return Container(
+      padding: EdgeInsets.fromLTRB(0, 0, 3, 0),
+      child: GridView.builder(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 0.0,
+          mainAxisSpacing: 2.0,
+          childAspectRatio: 0.7,
+        ),
+        itemCount: tenues.length,
+        itemBuilder: (context, index) {
+
+          final tenue = tenues[index];
+          print(tenue);
+          return CustomImageCard(
+            imagePath: tenue.photoPrincipale,  // Accès à l'image de l'objet Tenue
+            titre: tenue.nom,      // Accès au titre de l'objet Tenue
+            prixTenue: tenue.prix,   // Accès au prix de l'objet Tenue
+            indexe: index,
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildDetailsAtelierSection(atelier) {
+    print(commentaires);
+    if (atelier == null) {
+      return Center(child: CircularProgressIndicator()); // Indicateur de chargement
+    }
+
     return Padding(
       padding: EdgeInsets.all(16.0),
       child: Column(
@@ -82,7 +212,7 @@ class _DetailsAtelierPageState extends State<DetailsAtelierPage> {
                 SizedBox(width: 16.0),
                 Expanded(
                   child: Text(
-                    'Nom de l\'Atelier',
+                    atelier.name,
                     style: TextStyle(
                       fontSize: 24,
                       color: Colors.black,
@@ -95,34 +225,45 @@ class _DetailsAtelierPageState extends State<DetailsAtelierPage> {
           SizedBox(height: 16.0),
 
           // Informations de l'atelier
-          _buildInfoCard('Adresse', '123 Rue Exemple, Ville, Pays', Icons.location_on),
-          _buildInfoCard('Téléphone', '+123 456 7890', Icons.phone),
-          _buildInfoCard('Réseaux Sociaux', 'Facebook, Instagram', Icons.share),
+          _buildInfoCard('Adresse', atelier.address, Icons.location_on),
+          _buildInfoCard('Téléphone', atelier.phone, Icons.phone),
+          _buildInfoCardReseaux('Réseaux Sociaux', 'atelier.reseauxSociaux', Icons.share, '', '', ''),
           SizedBox(height: 16.0),
 
           // Avis
           Text('Avis', style: TextStyle(fontSize: 20, color: Colors.black)),
-          SizedBox(height: 8.0),
+          SizedBox(height: 3.0),
           Expanded(
-            child: ListView(
-              children: List.generate(5, (index) {
+            child: ListView.builder(
+              itemCount: commentaires.length,
+              itemBuilder: (context, index) {
+                final commentaire = commentaires[index];
                 return Card(
-                  color: Colors.grey[200],
+                  color: Colors.white,
                   elevation: 2.0,
                   margin: EdgeInsets.symmetric(vertical: 4.0),
                   child: ListTile(
-                    leading: CircleAvatar(child: Icon(Icons.person, color: Colors.white, size: 24), backgroundColor: Colors.grey,),
-                    title: Text('Utilisateur $index', style: TextStyle(color: Colors.blue)),
-                    subtitle: Text('Avis sur l\'atelier $index'),
+                    leading: CircleAvatar(
+                      child: Icon(Icons.person, color: Colors.white, size: 24),
+                      backgroundColor: Colors.white,
+                    ),
+                    title: Text(commentaire.nomClient, style: TextStyle(color: Colors.blue)),
+                    subtitle: Text('${commentaire.commentaire}\nNote: ${commentaire.note}'),
+
                   ),
                 );
-              }),
+              },
             ),
           ),
         ],
       ),
     );
   }
+}
+
+
+
+
 
   Widget _buildInfoCard(String title, String info, IconData icon) {
     return Container(
@@ -156,41 +297,222 @@ class _DetailsAtelierPageState extends State<DetailsAtelierPage> {
     );
   }
 
-  Widget _buildTenuesSection() {
-    return Padding(
-      padding: EdgeInsets.all(16.0),
-      child: GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 10.0,
-          mainAxisSpacing: 10.0,
+Widget _buildInfoCardReseaux(String title, String info, IconData icon, String insta, String facebook,String tiktok) {
+  return Container(
+    margin: EdgeInsets.only(bottom: 8.0),
+    padding: EdgeInsets.all(12.0),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(8.0),
+      border: Border.all(color: Colors.blueAccent),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.1),
+          spreadRadius: 2,
+          blurRadius: 5,
+          offset: Offset(0, 3),
         ),
-        itemCount: 10,
-        itemBuilder: (context, index) {
-          return Card(
-            elevation: 2.0,
+      ],
+    ),
+    child: Row(
+      children: [
+        Icon(icon, color: Colors.blueAccent, size: 24),
+        SizedBox(width: 16.0),
+           Expanded(
+          child: InkWell(
+            onTap: () => _launchURL(facebook),
+            child: Icon(Icons.facebook, color: Colors.blueAccent, size: 24),
+          ),
+
+           ),
+        Expanded(
+          child: InkWell(
+            onTap: () => _launchURL(insta),
+            child: Icon(Icons.camera_alt, color: Colors.pinkAccent, size: 24), // Instagram icon (can replace)
+          ),
+        ),
+        Expanded(
+          child:InkWell(
+            onTap: () => _launchURL(tiktok),
+            child: Icon(Icons.music_note, color: Colors.black, size: 24), // TikTok icon (can replace)
+          ),
+
+        ),
+      ],
+    ),
+  );
+}
+
+
+
+
+
+class CustomImageCard extends StatelessWidget {
+  final String imagePath; // Chemin de l'image
+  final String titre; // Titre sous l'image
+  final double width; // Largeur du conteneur
+  final double height; // Hauteur du conteneur
+  final int nbEtoile; // Nombre d'étoiles
+  final String prixTenue;
+  final int quantite; // Quantité
+
+
+
+  CustomImageCard({
+    required this.imagePath,
+    required this.titre,
+    this.width = 170.0,
+    this.height = 160.0,
+    this.nbEtoile = 4,
+    required this.prixTenue,
+    this.quantite = 0, required int indexe,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        // Action lors du clic sur la carte
+      },
+      child: Stack(
+        children: [
+          Container(
+            color: Colors.white,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  child: Container(
-                    color: Colors.grey[300],
-                    child: Icon(Icons.image, size: 40, color: Colors.grey[600]),
+                Container(
+                  width: width,
+                  height: height,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15), // Coins arrondis
+                    image: DecorationImage(
+                      image: NetworkImage(imagePath),
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Text('Nom de la Tenue', style: TextStyle(color: Colors.blue)),
+                SizedBox(height: 5),
+                Row(
+                  children: List.generate(5, (starIndex) {
+                    return Icon(
+                      Icons.star,
+                      color: starIndex < nbEtoile ? Color(0xFF0D47A1) : Colors.grey, // Couleur des étoiles
+                      size: 14,
+                    );
+                  }),
                 ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Text('Prix : 15,000 F CFA', style: TextStyle(color: Colors.greenAccent)),
+                Text(
+                  titre,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  prixTenue,
+                  style: TextStyle(
+                    color: Color(0xFF0D47A1),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  'F CFA',
+                  style: TextStyle(
+                    color: Color(0xFF0D47A1),
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ],
             ),
-          );
-        },
+          ),
+          Positioned(
+            top: 8,
+            right: 8,
+            child: CircleAvatar(
+              radius: 12,
+              backgroundColor: Colors.blue,
+              child: Text(
+                '$quantite',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: 8,
+            right: 8,
+            child: GestureDetector(
+              onTap: () {
+                // Logique pour ajouter au panier
+                print("Ajouté au panier!");
+              },
+              child: CircleAvatar(
+                radius: 14,
+                backgroundColor: Colors.blue,
+                child: Icon(
+                  Icons.add,
+                  color: Colors.white,
+                  size: 16,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
+  }
+}
+
+
+class HorizontalButtonList extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.all(4.0),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: List.generate(5, (index) {
+            // Noms des boutons
+            final buttonLabels = ['Haut', 'Robe', 'Boubou', 'Bas', 'Autres'];
+            return Container(
+              margin: EdgeInsets.symmetric(horizontal: 8.0),
+              child: ElevatedButton(
+                onPressed: () {
+                  // Logique lors de la pression sur un bouton
+                  print('${buttonLabels[index]} pressé');
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.black, // Couleur de fond bleu foncé
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                  ),
+                  padding: EdgeInsets.symmetric(horizontal: 16.0),
+                ),
+                child: Text(
+                  buttonLabels[index],
+                  style: TextStyle(
+                    fontSize: 14.0,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            );
+          }),
+        ),
+      ),
+    );
+  }
+}
+
+void _launchURL(String url) async {
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    throw 'Could not launch $url';
   }
 }

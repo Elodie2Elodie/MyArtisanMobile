@@ -8,6 +8,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_app/pages/widget_commun.dart' as widgetCommun; // Importation des widgets réutilisables
 
 class Liste_Tenues extends StatelessWidget {
+  final String atelierId;
+  Liste_Tenues({required this.atelierId});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -363,9 +363,9 @@ class CustomImageCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: (){
-        context.router.push(
-            gr.DetailsAtelierRoute()
-        );
+        // context.router.push(
+        //     gr.DetailsAtelierRoute(atelierId: '')
+        // );
       } ,
       child: Column(
         children: [
@@ -416,9 +416,9 @@ class CardAtelierHorizontal extends StatelessWidget {
               width: 140, // Largeur de chaque carré
               child:   GestureDetector(
                 onTap: (){
-                  context.router.push(
-                    gr.DetailsAtelierRoute()
-                  );
+                  // context.router.push(
+                  //   gr.DetailsAtelierRoute(atelierId: '', atelier: null)
+                  // );
                 },
                 child: Container(
                   child: Column(

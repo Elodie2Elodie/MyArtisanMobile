@@ -42,7 +42,7 @@ class PageParametres extends StatelessWidget {
                       onTap: () {
                         // Action lorsque le paramètre est sélectionné
                         context.router.push(
-                          MonProfil(),
+                          MonProfil(token: ''),
                         );
                       },
                     ),

@@ -1,10 +1,17 @@
+import 'dart:convert';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_app/pages/widget_commun.dart' as widgetCommun;
 import 'package:flutter_app/pages/router.gr.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../Models/utilisateurs.dart';
 import 'iphone_1415_details_commande.dart';
+import 'package:http/http.dart' as http;
+
+
 
 class Order {
   final String imageUrl;
@@ -13,6 +20,8 @@ class Order {
   final double? progress; // Pourcentage de travail (null si non applicable)
   final DateTime deliveryDate;
   final String orderNumber;
+  final String etatProgression;
+
 
   Order({
     required this.imageUrl,
@@ -21,221 +30,142 @@ class Order {
     this.progress,
     required this.deliveryDate,
     required this.orderNumber,
+    required this.etatProgression
   });
+
+  factory Order.fromJson(Map<String, dynamic> json) {
+    return Order(
+      imageUrl: json['photoCommande'] ?? 'assets/images/placeholder.png', // Correspond à photoCommande
+      atelierName: json['nomCouturier'] ?? 'Atelier inconnu', // Correspond à nomCouturier
+      status: json['status'] ?? 'Inconnu',
+      progress: json['progression'] != null ? json['progression'].toDouble() : null, // Correspond à progression
+      deliveryDate: DateTime.parse(json['dateFin']), // Correspond à dateFin
+      orderNumber: json['nomCommande'] ?? 'N/A', // Correspond à nomCommande
+      etatProgression: json['etatProgression']
+    );
+  }
 }
 
 @RoutePage()
-class Iphone1415ListeCommande extends StatelessWidget {
-  final List<Order> orders = [
-    Order(
-      imageUrl: 'assets/images/rectangle_34625156.png',
-      atelierName: 'Atelier Chic',
-      status: 'En cours',
-      progress: 45.0,
-      deliveryDate: DateTime.now().add(Duration(days: 7)),
-      orderNumber: 'Comm1000',
-    ),
-    Order(
-      imageUrl: 'assets/images/rectangle_34625156.png',
-      atelierName: 'Atelier Mode',
-      status: 'Annulée',
-      deliveryDate: DateTime.now().subtract(Duration(days: 1)),
-      orderNumber: 'Comm120',
-    ),
-    // Ajoutez plus de commandes ici
-  ];
+class Iphone1415ListeCommande extends StatefulWidget {
+  const Iphone1415ListeCommande({super.key});
 
   @override
+  State<Iphone1415ListeCommande> createState() => _Iphone1415ListeCommandeState();
+}
+
+class _Iphone1415ListeCommandeState extends State<Iphone1415ListeCommande> {
+
+  late Future<String?> userProfile;
+  late String userId;
+
+
+  @override
+  void initState() {
+    super.initState();
+    // Charger les données utilisateur à partir de l'API
+    userProfile = getUser();
+  }
+
+
+  Future<String?> getUser() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? userJson = prefs.getString('user');
+    if (userJson != null) {
+      print('IdUtil: ---------------->'+ User.fromJson(json.decode(userJson)).id);
+      print(User.fromJson(json.decode(userJson)));
+      return User.fromJson(json.decode(userJson)).id;
+    } else {
+      return null;
+    }
+  }
+
   Widget build(BuildContext context) {
+
+    Future<List<Order>> fetchOrders(String? userId) async {
+      final response = await http.get(Uri.parse('http://192.168.1.5:8000/mobile/getCommandeById/$userId'));
+
+      if (response.statusCode == 200) {
+        // Si la requête a été réussie, on décode les données JSON
+        List<dynamic> data = json.decode(response.body);
+        print(response.body);
+        print(data.map((orderData) => Order.fromJson(orderData)).toList());
+        return data.map((orderData) => Order.fromJson(orderData)).toList();
+      } else {
+        throw Exception('Erreur lors du chargement des commandes');
+      }
+    }
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(80.0),
-        child: widgetCommun.CustomAppBar(), // Utilisation du CustomAppBar
+        child: widgetCommun.CustomAppBar(),
       ),
-       body: Container(
-        child: Column(
-          children: [
-            // Custom AppBar en haut de l'écran
-            widgetCommun.Panier(),
-            GestureDetector(
-                onTap: () {
-                  context.router.push(
-                    AjoutCommande(),
-                  );
-                },
-              child: Container(
-                margin: EdgeInsets.fromLTRB(300, 30, 0, 0),
-              width: 30.0, // Largeur du bouton
-              height: 30.0, // Hauteur du bouton
-              decoration: BoxDecoration(
-                shape: BoxShape.circle, // Forme ronde
-                color: Colors.white, // Couleur de fond du bouton
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.3), // Couleur de l'ombre
-                    offset: Offset(0, 4), // Déplacement de l'ombre
-                    blurRadius: 8, // Flou de l'ombre
-                    spreadRadius: 2, // Étendue de l'ombre
-                  ),
-                ],
-              ),
-              child: Center(
-                child: Icon(
-                  Icons.add, // Icône plus
-                  color: Colors.black, // Couleur de l'icône
-                  size: 30.0, // Taille de l'icône
-                ),
-              ),
-                      ),
-            ),
-            Container(
-              margin: EdgeInsets.fromLTRB(27, 0, 27, 10.5),
-              child: Align(
-                alignment: Alignment.topLeft,
-                child: SizedBox(
-                    width: 314,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          margin: EdgeInsets.fromLTRB(0, 0, 0, 14),
-                          child: Text(
-                            'Tout',
-                            style: GoogleFonts.getFont(
-                              'GFS Didot',
-                              fontWeight: FontWeight.w400,
-                              fontSize: 18,
-                              color: Color(0xFF000000),
-                            ),
-                          ),
-                        ),
-                        Container(
-                          width: 300, // Tu peux ajuster la largeur de la ligne ici
-                          height: 2,  // Hauteur de la ligne
-                          color: Color(0xFF11477E), // Couleur bleu foncé
-                        ),
-                      ],
-                    )
+      body: FutureBuilder<String?>(
+        future: userProfile,
+        builder: (context, userSnapshot) {
+          if (userSnapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (userSnapshot.hasError) {
+            return Center(child: Text('Erreur lors du chargement du profil utilisateur.'));
+          } else if (!userSnapshot.hasData || userSnapshot.data == null) {
+            return Center(child: Text('Aucun profil utilisateur trouvé.'));
+          }
 
-                ),
-              ),
-            ),
-            // Liste des commandes scrollable
-            Expanded(
-              child: ListView.builder(
-                itemCount: 10, // Remplacez par le nombre réel de commandes
+          final userId = userSnapshot.data; // Assurez-vous que 'id' est bien dans votre modèle utilisateur
+          print('oooooooooooooooooooooooooooooooooooooooooooooooooo');
+          print(userSnapshot.data);
+          // Maintenant que nous avons l'utilisateur, nous pouvons charger les commandes
+          return FutureBuilder<List<Order>>(
+            future: fetchOrders(userId),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Erreur: ${snapshot.error}'));
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return Center(child: Text('Aucune commande trouvée.'));
+              }
+
+              List<Order> orders = snapshot.data!;
+              return ListView.builder(
+                itemCount: orders.length,
                 itemBuilder: (context, index) {
+                  Order order = orders[index];
                   return InkWell(
                     onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => Iphone1415DetailsCommande(
-                            imageUrl: 'assets/images/rectangle_34625156.png', // Remplacez par l'URL ou le chemin réel
-                            atelierName: 'Nom de l\'atelier $index',
-                            orderStatus: 'En cours', // Changez selon l'état de la commande
-                            progress: 50, // Remplacez par le pourcentage réel
-                            dueDate: '01/01/2024',
-                            orderNumber: '12345',
+                            imageUrl: order.imageUrl,
+                            atelierName: order.atelierName,
+                            orderStatus: order.status,
+                            progress: order.progress?.toInt() ?? 0,
+                            dueDate: order.deliveryDate.toString(),
+                            orderNumber: order.orderNumber,
+                            etatProgression:order.etatProgression
                           ),
                         ),
                       );
                     },
-                    child: Container(
-                      margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                      padding: EdgeInsets.all(16.0),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(8.0),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.2),
-                            spreadRadius: 2,
-                            blurRadius: 5,
-                            offset: Offset(0, 3),
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        children: [
-                          // Image de la tenue
-                          Container(
-                            width: 60,
-                            height: 60,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8.0),
-                              image: DecorationImage(
-                                image: AssetImage('assets/images/rectangle_34625156.png'),
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: 16.0),
-                          // Détails de la commande
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Nom de la tenue $index',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Text(
-                                  'Atelier: Nom de l\'atelier $index',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.black54,
-                                  ),
-                                ),
-                                Text(
-                                  'État: En cours', // Changez selon l'état de la commande
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.green,
-                                  ),
-                                ),
-                                if (true) // Remplacez par une condition réelle pour vérifier l'état "en cours"
-                                  LinearProgressIndicator(
-                                    value: 0.5, // Remplacez par le pourcentage réel
-                                    backgroundColor: Colors.grey[300],
-                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
-                                  ),
-                                Text(
-                                  'Date de remise: 01/01/2024',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.black54,
-                                  ),
-                                ),
-                                SizedBox(height: 8.0),
-                                Text(
-                                  'Numéro de commande: #12345',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.black54,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
+                    child: _buildOrderItem(
+                      imageUrl: order.imageUrl,
+                      atelierName: order.atelierName,
+                      orderStatus: order.status,
+                      deliveryDate: _formatDate(order.deliveryDate),
+                      orderNumber: order.orderNumber,
+                      progress: order.progress?.toInt(),
                     ),
                   );
                 },
-              ),
-            ),
-          ],
-        ),
+              );
+            },
+          );
+        },
       ),
     );
   }
-
   Widget _buildOrderItem({
     required String imageUrl,
     required String atelierName,
@@ -264,7 +194,7 @@ class Iphone1415ListeCommande extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
-            child: Image.asset(
+            child: Image.network(
               imageUrl,
               width: 80,
               height: 80,
@@ -342,82 +272,5 @@ class Iphone1415ListeCommande extends StatelessWidget {
 
   String _formatDate(DateTime date) {
     return '${date.day}/${date.month}/${date.year}';
-  }
-}
-
-
-
-class CountdownButton extends StatefulWidget {
-  @override
-  _CountdownButtonState createState() => _CountdownButtonState();
-}
-
-class _CountdownButtonState extends State<CountdownButton> {
-  bool _isCountingDown = false;
-  int _remainingTime = 30;
-
-  void _startCountdown() {
-    setState(() {
-      _isCountingDown = true;
-      _remainingTime = 30;
-    });
-
-    Future.delayed(Duration(seconds: 1), _decrementTime);
-  }
-
-  void _decrementTime() {
-    if (_remainingTime > 0) {
-      setState(() {
-        _remainingTime--;
-      });
-      Future.delayed(Duration(seconds: 1), _decrementTime);
-    } else {
-      setState(() {
-        _isCountingDown = false;
-      });
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return _isCountingDown
-        ? Text(
-      'Renvoyer dans $_remainingTime secondes',
-      style: TextStyle(
-        color: Color(0xFF0D47A1), // Bleu foncé
-        fontSize: 14,
-        fontWeight: FontWeight.bold,
-      ),
-    )
-        : ElevatedButton(
-      onPressed: _startCountdown,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Color(0xFF0D47A1), // Bleu foncé
-      ),
-      child: Text('Renvoyer', style: TextStyle(color: Colors.white),),
-    );
-  }
-}
-class ContainerTitre extends StatelessWidget {
-  final String titre;
-
-  ContainerTitre({
-    required this.titre,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.fromLTRB(0, 0, 0, 14),
-      child: Text(
-        this.titre,
-        style: GoogleFonts.getFont(
-          'GFS Didot',
-          fontWeight: FontWeight.w400,
-          fontSize: 18,
-          color: Color(0xFF000000),
-        ),
-      ),
-    );
   }
 }

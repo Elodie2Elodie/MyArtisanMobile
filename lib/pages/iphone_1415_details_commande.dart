@@ -9,6 +9,7 @@ class Iphone1415DetailsCommande extends StatelessWidget {
   final int progress;
   final String dueDate;
   final String orderNumber;
+  final String etatProgression;
 
   Iphone1415DetailsCommande({
     Key? key,
@@ -18,6 +19,7 @@ class Iphone1415DetailsCommande extends StatelessWidget {
     this.progress = 24,
     this.dueDate = 'comm008',
     this.orderNumber = 'ooooo',
+    this.etatProgression='',
   }) : super(key: key);
 
   @override
@@ -40,7 +42,7 @@ class Iphone1415DetailsCommande extends StatelessWidget {
               height: 200,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage(imageUrl),  // Utilisez AssetImage ici
+                  image: NetworkImage(imageUrl),  // Utilisez AssetImage ici
                   fit: BoxFit.cover,
                 ),
                 borderRadius: BorderRadius.circular(12.0),
@@ -131,7 +133,7 @@ class Iphone1415DetailsCommande extends StatelessWidget {
             ),
             SizedBox(height: 8.0),
             Text(
-              'Etat de l\'avancement: Mauvais',
+              'Etat de l\'avancement: ' + etatProgression,
               style: GoogleFonts.getFont(
                 'GFS Didot',
                 fontWeight: FontWeight.w400,
@@ -183,6 +185,8 @@ class Iphone1415DetailsCommande extends StatelessWidget {
         return Colors.green;
       case 'En retard':
         return Colors.orange;
+      case 'En attente':
+        return Colors.green;
       default:
         return Colors.grey;
     }

@@ -1,87 +1,106 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/pages/Liste_Atelier.dart';
+
+import 'package:flutter_app/pages/router.gr.dart';
 import 'dart:ui';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_app/utils.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'package:flutter_app/pages/widget_commun.dart' as widgetCommun;
+import 'package:flutter_app/Models/atelier.dart'; // Importez votre modèle Atelier
+
+import 'package:flutter_app/pages/api_service.dart'; // Assure-toi que le chemin est correct
 
 @RoutePage()
 class ListeAtelier extends StatelessWidget {
+  final ApiService apiService = ApiService();
+
   @override
   Widget build(BuildContext context) {
-    return
-      Scaffold(
-        backgroundColor: Colors.white,
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(80.0),
-          child: widgetCommun.CustomAppBar(), // Utilisation du CustomAppBar
-        ),
-        body: Container(
-          padding: EdgeInsets.fromLTRB(0, 5, 3, 0),
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              SizedBox(
-                width: 548,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    widgetCommun.Panier(),
-                    Container(
-                      margin: EdgeInsets.fromLTRB(27, 0, 27, 17.5),
-                      child: Align(
-                        alignment: Alignment.topLeft,
-                        child: SizedBox(
-                            width: 314,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                ContainerTitre(titre: 'Ateliers'),
-                                Container(
-                                  width: 300, // Tu peux ajuster la largeur de la ligne ici
-                                  height: 2,  // Hauteur de la ligne
-                                  color: Color(0xFF11477E), // Couleur bleu foncé
-                                ),
-                              ],
-                            )
-
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(80.0),
+        child: widgetCommun.CustomAppBar(), // Utilisation du CustomAppBar
+      ),
+      body: Container(
+        padding: EdgeInsets.fromLTRB(0, 5, 3, 0),
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            SizedBox(
+              width: 548,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  widgetCommun.Panier(),
+                  Container(
+                    margin: EdgeInsets.fromLTRB(27, 0, 27, 17.5),
+                    child: Align(
+                      alignment: Alignment.topLeft,
+                      child: SizedBox(
+                        width: 314,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            widgetCommun.ContainerTitre(titre: 'Ateliers'),
+                            Container(
+                              width: 300, // Tu peux ajuster la largeur de la ligne ici
+                              height: 2,  // Hauteur de la ligne
+                              color: Color(0xFF11477E), // Couleur bleu foncé
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                    Container(
-                      child: HorizontalButtonList(),
+                  ),
+                  Container(
+                    child: HorizontalButtonList(),
+                  ),
+                  Expanded(
+                    child: FutureBuilder<List<Atelier>>(
+                      future: apiService.fetchAteliers(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return Center(child: CircularProgressIndicator());
+                        } else if (snapshot.hasError) {
+                          return Center(child: Text('Erreur: ${snapshot.error}'));
+                        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                          return Center(child: Text('Aucun atelier trouvé'));
+                        } else {
+                          return GridView.builder(
+                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2, // Nombre de carrés par ligne
+                              crossAxisSpacing: 16.0, // Espacement horizontal entre les carrés
+                              mainAxisSpacing: 16.0, // Espacement vertical entre les carrés
+                              childAspectRatio: 1.0, // Ratio largeur/hauteur des carrés
+                            ),
+                            itemCount: snapshot.data!.length,
+                            itemBuilder: (context, index) {
+                              final atelier = snapshot.data![index];
+                              return CustomImageCard(
+                                imagePath: atelier.profilePhoto ?? 'assets/images/rectangle_34625156.png',
+                                titre: atelier.name ?? 'Nom de l\'atelier',
+                                indexe: index,
+                                adressseAtelier: atelier.address,
+                                atelierId: atelier.atelierId,
+                                atelier: atelier,
+                              );
+                            },
+                          );
+                        }
+                      },
                     ),
-                    Container(
-                      height: 470,
-                      child: GridView.builder(
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2, // Nombre de carrés par ligne
-                          crossAxisSpacing: 16.0, // Espacement horizontal entre les carrés
-                          mainAxisSpacing: 16.0, // Espacement vertical entre les carrés
-                          childAspectRatio: 1.0, // Ratio largeur/hauteur des carrés
-                        ),
-                        itemCount: 10, // Nombre total de carrés
-                        itemBuilder: (context, index) {
-                          return CustomImageCard(indexe: index,adressseAtelier: 'Ngor',);
-                        },
-                      ),
-                    ),
-
-                  ],
-                ),
+                  ),
+                ],
               ),
-
-            ],
-          ),
+            ),
+          ],
         ),
-      );
+      ),
+    );
   }
 }
-
 
 class CustomImageCard extends StatelessWidget {
   final String imagePath; // Chemin de l'image
@@ -91,31 +110,40 @@ class CustomImageCard extends StatelessWidget {
   final int NbEtoile;
   final int indexe;
   final String adressseAtelier;
+  final String atelierId;
+  final atelier;
 
   // Constructeur pour initialiser les propriétés
   CustomImageCard({
-    this.imagePath='assets/images/rectangle_34625156.png',
-    this.titre='nom de latelier',
+    this.imagePath = 'assets/images/rectangle_34625156.png',
+    this.titre = 'nom de l\'atelier',
     this.width = 140.0,
     this.height = 180.0,
-    this.NbEtoile=4,
+    this.NbEtoile = 4,
     required this.indexe,
-    required this.adressseAtelier
+    required this.adressseAtelier,
+    required this.atelierId,
+    required this.atelier
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => Liste_Tenues()),
+        // context.router.push(
+        //   AjoutCommande(),
+        // );
+
+        context.router.push(
+            DetailsAtelierRoute(atelierId: atelierId, atelier: atelier)
         );
       },
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start, // Alignement à gauche pour tout le contenu
         children: [
           Expanded(
             child: Container(
+              margin: EdgeInsets.only(left: 5.0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15), // Coins arrondis
                 image: DecorationImage(
@@ -125,36 +153,43 @@ class CustomImageCard extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(height: 8), // Espacement entre l'image et le texte
-          Row(
-            children: [Text(
-              titre, // Remplacez par le nom approprié
-              style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
+          SizedBox(height: 8),
+         // Espacement entre l'image et le texte
+          Container(
+            margin: EdgeInsets.only(left: 5.0),
+            child: Align(
+              alignment: Alignment.centerLeft, // Texte aligné à gauche
+              child: Text(
+                titre, // Remplacez par le nom approprié
+                style: TextStyle(
+                  color: Colors.black,
+                ),
               ),
             ),
-            ],
           ),
-          Row(
-            children: [
-              Text(
+          Container(
+            margin: EdgeInsets.only(left: 5.0),
+            child: Align(
+              alignment: Alignment.centerLeft, // Texte aligné à gauche
+              child: Text(
                 adressseAtelier, // Remplacez par le nom approprié
                 style: TextStyle(
                   color: Colors.black,
-                  fontWeight: FontWeight.bold,
                 ),
               ),
-            ]
+            ),
           ),
-          Row(
-            children: List.generate(5, (starIndex) {
-              return Icon(
-                Icons.star,
-                color: starIndex < NbEtoile ? Color(0xFF0D47A1): Colors.grey, // Couleur des étoiles
-                size: 14,
-              );
-            }),
+          Container(
+            margin: EdgeInsets.only(left: 5.0),
+            child: Row(
+              children: List.generate(5, (starIndex) {
+                return Icon(
+                  Icons.star,
+                  color: starIndex < NbEtoile ? Color(0xFF0D47A1) : Colors.grey, // Couleur des étoiles
+                  size: 14,
+                );
+              }),
+            ),
           ),
         ],
       ),
@@ -162,206 +197,38 @@ class CustomImageCard extends StatelessWidget {
   }
 }
 
-class CardAtelierHorizontal extends StatelessWidget {
-  final String imagePath; // Chemin de l'image
-  final String NomAtelier;
-  final double NbEtoile; // Titre sous l'image
-  final int indexe; // Largeur du conteneur
-
-
-  // Constructeur pour initialiser les propriétés
-  CardAtelierHorizontal({
-    this.imagePath='assets/images/rectangle_34625156.png',
-    this.NomAtelier='nom de latelier',
-    this.NbEtoile= 4,
-    required this.indexe,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        margin: EdgeInsets.symmetric(horizontal: 8.0),
-        width: 140, // Largeur de chaque carré
-        child:   GestureDetector(
-          child: Container(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: 140,
-                  height: 140,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15), // Coins arrondis
-                    image: DecorationImage(
-                      image: AssetImage(imagePath), // Remplacez par le chemin de votre image
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 8), // Espace entre l'image et le texte
-                Text(
-                  NomAtelier,
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Row(
-                  children: List.generate(4, (starIndex) {
-                    return Icon(
-                        Icons.star,
-                        color: starIndex < 3 ? Colors.yellow : Colors.grey, // Couleur des étoiles
-                        size: 14
-                    );
-                  }),
-                ),
-              ],
-            ),
-          ),
-        )
-    );
-  }
-
-}
-
-class CustomAppBar extends StatelessWidget {
-  final String logoPath; // Chemin du logo
-
-  const CustomAppBar({super.key, this.logoPath = 'assets/images/rectangle_34625156.png'});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.fromLTRB(0, 0, 0, 14),
-      decoration: BoxDecoration(
-        border: Border.all(color: Color(0xFFFFFFFF)),
-        color: Color(0xFFFFFFFF),
-      ),
-      child: Container(
-        padding: EdgeInsets.fromLTRB(20, 15, 0, 2),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Logo carré avec bords arrondis à gauche
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8.0), // Rayon pour les bords arrondis
-              child: Image.asset(
-                logoPath, // Chemin de votre logo
-                height: 60, // Ajustez la taille selon vos besoins
-                width: 60,
-                fit: BoxFit.cover,
-              ),
-            ),
-            Spacer(),
-            // Icône de notification
-            IconButton(
-              icon: Icon(
-                Icons.notifications,
-                color: Colors.black,
-                size: 24,
-              ),
-              onPressed: () {
-                // Action lorsque l'icône de notification est pressée
-              },
-            ),
-            // Icône de l'utilisateur avec menu déroulant
-            PopupMenuButton<String>(
-              onSelected: (value) {
-                // Gérer la sélection du menu ici
-                if (value == 'logout') {
-                  // Logique de déconnexion
-                }
-              },
-              icon: Row(
-                children: [
-                  Icon(
-                    Icons.person,
-                    color: Colors.black,
-                    size: 24,
-                  ),
-                  SizedBox(width: 4),
-                  Icon(
-                    Icons.arrow_drop_down,
-                    color: Colors.black,
-                    size: 24,
-                  ),
-                ],
-              ),
-              itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                PopupMenuItem<String>(
-                  value: 'profile',
-                  child: Text('Voir le profil'),
-                ),
-                PopupMenuItem<String>(
-                  value: 'logout',
-                  child: Text('Déconnexion'),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class ContainerTitre extends StatelessWidget {
-  final String titre;
-
-  ContainerTitre({
-    required this.titre,
-});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.fromLTRB(0, 0, 0, 14),
-      child: Text(
-        this.titre,
-        style: GoogleFonts.getFont(
-          'GFS Didot',
-          fontWeight: FontWeight.w400,
-          fontSize: 18,
-          color: Color(0xFF000000),
-        ),
-      ),
-    );
-  }
-}
 
 class HorizontalButtonList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: EdgeInsets.fromLTRB(4.0, 2.0,2.0,4.0),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: List.generate(5, (index) {
-              // Noms des boutons
-              final buttonLabels = ['Haut', 'Robe', 'Boubou', 'Bas', 'Autres'];
-              return Container(
-                margin: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 0.0),
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    // Couleur de fond du bouton
-                    padding: EdgeInsets.symmetric(horizontal: 16.0), // Padding interne
-                    textStyle: TextStyle(fontSize: 16), // Taille du texte
-                    backgroundColor: Colors.black,
-                    foregroundColor: Colors.white,
-                  ),
-                  onPressed: () {
-                    // Action lorsque le bouton est pressé
-                    print('${buttonLabels[index]} pressé');
-                  },
-                  child: Text(buttonLabels[index]), // Texte du bouton
+      padding: EdgeInsets.fromLTRB(4.0, 2.0, 2.0, 4.0),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: List.generate(5, (index) {
+            // Noms des boutons
+            final buttonLabels = ['Haut', 'Robe', 'Boubou', 'Bas', 'Autres'];
+            return Container(
+              margin: EdgeInsets.fromLTRB(0, 0.0, 8.0, 0.0),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  // Couleur de fond du bouton
+                  padding: EdgeInsets.symmetric(horizontal: 16.0), // Padding interne
+                  textStyle: TextStyle(fontSize: 16), // Taille du texte
+                  backgroundColor: Colors.black,
+                  foregroundColor: Colors.white,
                 ),
-              );
-            }),
-          ),
+                onPressed: () {
+                  // Action lorsque le bouton est pressé
+                  print('${buttonLabels[index]} pressé');
+                },
+                child: Text(buttonLabels[index]), // Texte du bouton
+              ),
+            );
+          }),
         ),
+      ),
     );
   }
 }
-

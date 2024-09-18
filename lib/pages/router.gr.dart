@@ -9,6 +9,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:auto_route/auto_route.dart' as _i26;
+import 'package:flutter_app/Models/atelier.dart' as _i27;
 import 'package:flutter_app/pages/accuei_navigation_page.dart' as _i1;
 import 'package:flutter_app/pages/Accueil.dart' as _i2;
 import 'package:flutter_app/pages/ajout_commande.dart' as _i4;
@@ -59,9 +60,10 @@ abstract class $AppRouter extends _i26.RootStackRouter {
       );
     },
     AjoutCommande.name: (routeData) {
+      final args = routeData.argsAs<AjoutCommandeArgs>();
       return _i26.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: _i4.AjoutCommande(),
+        child: _i4.AjoutCommande(atelierId: args.atelierId),
       );
     },
     AuthentificationNavigation.name: (routeData) {
@@ -89,9 +91,13 @@ abstract class $AppRouter extends _i26.RootStackRouter {
       );
     },
     DetailsAtelierRoute.name: (routeData) {
+      final args = routeData.argsAs<DetailsAtelierRouteArgs>();
       return _i26.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: _i9.DetailsAtelierPage(),
+        child: _i9.DetailsAtelierPage(
+          atelierId: args.atelierId,
+          atelier: args.atelier,
+        ),
       );
     },
     Inscription.name: (routeData) {
@@ -103,7 +109,7 @@ abstract class $AppRouter extends _i26.RootStackRouter {
     Iphone1415ListeCommande.name: (routeData) {
       return _i26.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: _i11.Iphone1415ListeCommande(),
+        child: const _i11.Iphone1415ListeCommande(),
       );
     },
     ListeAtelier.name: (routeData) {
@@ -155,9 +161,10 @@ abstract class $AppRouter extends _i26.RootStackRouter {
       );
     },
     MonProfil.name: (routeData) {
+      final args = routeData.argsAs<MonProfilArgs>();
       return _i26.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: _i20.MonProfil(),
+        child: _i20.MonProfil(token: args.token),
       );
     },
     RouteMessagerie.name: (routeData) {
@@ -237,16 +244,31 @@ class AccueilUtilisateur extends _i26.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i4.AjoutCommande]
-class AjoutCommande extends _i26.PageRouteInfo<void> {
-  const AjoutCommande({List<_i26.PageRouteInfo>? children})
-      : super(
+class AjoutCommande extends _i26.PageRouteInfo<AjoutCommandeArgs> {
+  AjoutCommande({
+    required String atelierId,
+    List<_i26.PageRouteInfo>? children,
+  }) : super(
           AjoutCommande.name,
+          args: AjoutCommandeArgs(atelierId: atelierId),
           initialChildren: children,
         );
 
   static const String name = 'AjoutCommande';
 
-  static const _i26.PageInfo<void> page = _i26.PageInfo<void>(name);
+  static const _i26.PageInfo<AjoutCommandeArgs> page =
+      _i26.PageInfo<AjoutCommandeArgs>(name);
+}
+
+class AjoutCommandeArgs {
+  const AjoutCommandeArgs({required this.atelierId});
+
+  final String atelierId;
+
+  @override
+  String toString() {
+    return 'AjoutCommandeArgs{atelierId: $atelierId}';
+  }
 }
 
 /// generated route for
@@ -307,16 +329,40 @@ class Connexion extends _i26.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i9.DetailsAtelierPage]
-class DetailsAtelierRoute extends _i26.PageRouteInfo<void> {
-  const DetailsAtelierRoute({List<_i26.PageRouteInfo>? children})
-      : super(
+class DetailsAtelierRoute extends _i26.PageRouteInfo<DetailsAtelierRouteArgs> {
+  DetailsAtelierRoute({
+    required String atelierId,
+    required _i27.Atelier atelier,
+    List<_i26.PageRouteInfo>? children,
+  }) : super(
           DetailsAtelierRoute.name,
+          args: DetailsAtelierRouteArgs(
+            atelierId: atelierId,
+            atelier: atelier,
+          ),
           initialChildren: children,
         );
 
   static const String name = 'DetailsAtelierRoute';
 
-  static const _i26.PageInfo<void> page = _i26.PageInfo<void>(name);
+  static const _i26.PageInfo<DetailsAtelierRouteArgs> page =
+      _i26.PageInfo<DetailsAtelierRouteArgs>(name);
+}
+
+class DetailsAtelierRouteArgs {
+  const DetailsAtelierRouteArgs({
+    required this.atelierId,
+    required this.atelier,
+  });
+
+  final String atelierId;
+
+  final _i27.Atelier atelier;
+
+  @override
+  String toString() {
+    return 'DetailsAtelierRouteArgs{atelierId: $atelierId, atelier: $atelier}';
+  }
 }
 
 /// generated route for
@@ -461,16 +507,31 @@ class Messagerienavigator extends _i26.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i20.MonProfil]
-class MonProfil extends _i26.PageRouteInfo<void> {
-  const MonProfil({List<_i26.PageRouteInfo>? children})
-      : super(
+class MonProfil extends _i26.PageRouteInfo<MonProfilArgs> {
+  MonProfil({
+    required String token,
+    List<_i26.PageRouteInfo>? children,
+  }) : super(
           MonProfil.name,
+          args: MonProfilArgs(token: token),
           initialChildren: children,
         );
 
   static const String name = 'MonProfil';
 
-  static const _i26.PageInfo<void> page = _i26.PageInfo<void>(name);
+  static const _i26.PageInfo<MonProfilArgs> page =
+      _i26.PageInfo<MonProfilArgs>(name);
+}
+
+class MonProfilArgs {
+  const MonProfilArgs({required this.token});
+
+  final String token;
+
+  @override
+  String toString() {
+    return 'MonProfilArgs{token: $token}';
+  }
 }
 
 /// generated route for
