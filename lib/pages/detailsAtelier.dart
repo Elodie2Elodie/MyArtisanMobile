@@ -10,7 +10,9 @@ import 'package:flutter_app/Models/atelier.dart';
 import 'package:flutter_app/pages/widget_commun.dart' as widgetCommun;
 import 'package:url_launcher/url_launcher.dart';
 
+import '../Models/Article.dart';
 import '../Models/Tenues.dart';
+import 'PanierService.dart';
 
 @RoutePage()
 class DetailsAtelierPage extends StatefulWidget {
@@ -372,7 +374,14 @@ class CustomImageCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Action lors du clic sur la carte
+        final item = PanierItem(
+          imagePath: imagePath,
+          titre: titre,
+          prixTenue: prixTenue,
+          quantite: 1, // Définir la quantité par défaut
+        );
+        PanierService().ajouterAuPanier(item);
+        print("Ajouté au panier!");
       },
       child: Stack(
         children: [
@@ -447,6 +456,14 @@ class CustomImageCard extends StatelessWidget {
             right: 8,
             child: GestureDetector(
               onTap: () {
+                final item = PanierItem(
+                  imagePath: imagePath,
+                  titre: titre,
+                  prixTenue: prixTenue,
+                   // Définir la quantité par défaut
+                );
+                PanierService().ajouterAuPanier(item);
+                print("Ajouté au panier!");
                 // Logique pour ajouter au panier
                 print("Ajouté au panier!");
               },
