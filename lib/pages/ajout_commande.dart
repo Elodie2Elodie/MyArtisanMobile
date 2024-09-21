@@ -89,7 +89,7 @@ class _AjoutCommandeState extends State<AjoutCommande> {
     var request = http.MultipartRequest('POST', uri)
       ..fields['dateFin'] = dateFin
       ..fields['description'] = description
-      ..fields['atelierId'] = '1'
+      ..fields['atelierId'] = widget.atelierId
       ..fields['clientId'] = userId!;
     print(widget.atelierId);
     print(userId);

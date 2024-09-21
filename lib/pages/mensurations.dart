@@ -55,7 +55,7 @@ class _MensurationsState extends State<Mensurations> {
   void initState() {
     super.initState();
     _loadUserId();  // Appel de la méthode pour charger l'ID utilisateur
-    _fetchMensurations();
+
   }
 
 
@@ -63,34 +63,48 @@ class _MensurationsState extends State<Mensurations> {
 // Méthode asynchrone pour charger l'ID utilisateur
   Future<void> _loadUserId() async {
     userId = await getUser();  // Récupération de l'ID utilisateur
+
     if (userId == null) {
       // Gérer le cas où l'ID utilisateur n'est pas disponible
       print("ID utilisateur non trouvé.");
     } else {
+      _fetchMensurations();
       print("ID utilisateur : $userId");
     }
   }
 
   Future<void> _fetchMensurations() async {
     try {
-      final response = await http.get(Uri.parse('http://192.168.1.5:8000/mobile/getMensurations'));
+      final response = await http.get(Uri.parse('http://192.168.1.5:8000/mobile/getMensurations/${userId}'));
+
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
 
-        // Remplir les champs avec les valeurs récupérées
-        setState(() {
-          poitrineController.text = data['poitrine']?.toString() ?? '';
-          tailleController.text = data['taille']?.toString() ?? '';
-          hanchesController.text = data['hanches']?.toString() ?? '';
-          epaulesController.text = data['epaules']?.toString() ?? '';
-          brasController.text = data['bras']?.toString() ?? '';
-          couController.text = data['cou']?.toString() ?? '';
-          jambesController.text = data['jambes']?.toString() ?? '';
-          cuissesController.text = data['cuisses']?.toString() ?? '';
-          molletsController.text = data['mollets']?.toString() ?? '';
-          chevillesController.text = data['chevilles']?.toString() ?? '';
-          isLoading = false; // Fin du chargement
-        });
+        if (data.isNotEmpty) {
+          // Supposons que tu veux le premier objet de la liste de mensurations
+          final mensurations = data[0];
+
+          // Remplir les champs avec les valeurs récupérées
+          setState(() {
+            poitrineController.text = mensurations['tour_poitrine']?.toString() ?? '';
+            tailleController.text = mensurations['tour_taille']?.toString() ?? '';
+            hanchesController.text = mensurations['tour_hanches']?.toString() ?? '';
+            epaulesController.text = mensurations['largeur_epaules']?.toString() ?? '';
+            brasController.text = mensurations['longueur_bras']?.toString() ?? '';
+            couController.text = mensurations['tour_cou']?.toString() ?? '';
+            jambesController.text = mensurations['longueur_jambes']?.toString() ?? '';
+            cuissesController.text = mensurations['tour_cuisses']?.toString() ?? '';
+            molletsController.text = mensurations['tour_mollets']?.toString() ?? '';
+            chevillesController.text = mensurations['tour_chevilles']?.toString() ?? '';
+            isLoading = false; // Fin du chargement
+          });
+        } else {
+          // Si aucune mensuration n'est trouvée
+          print('Aucune mensuration trouvée pour cet utilisateur');
+          setState(() {
+            isLoading = false; // Fin du chargement même en cas d'absence de données
+          });
+        }
       } else {
         // Gérer les erreurs de l'API
         print('Erreur de récupération des mensurations');
@@ -105,6 +119,7 @@ class _MensurationsState extends State<Mensurations> {
       });
     }
   }
+
 
   // Fonction pour envoyer les données à l'API
   Future<void> _submitMensurations() async {

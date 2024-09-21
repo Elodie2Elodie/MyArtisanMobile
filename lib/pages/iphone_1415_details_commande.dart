@@ -1,37 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_app/pages/widget_commun.dart' as widgetCommun;
+import 'package:intl/intl.dart';
 
 class Iphone1415DetailsCommande extends StatelessWidget {
   final String imageUrl;
-  final String atelierName;
+  final String couturierName;
   final String orderStatus;
   final int progress;
   final String dueDate;
   final String orderNumber;
   final String etatProgression;
+  final String etat;
+  final String startDate;
+  final String dateDebut;
+  final String prix;
 
   Iphone1415DetailsCommande({
     Key? key,
     this.imageUrl = 'assets/images/rectangle_34625156.png',
-    this.atelierName = "Magnifique",
+    this.couturierName = "Magnifique",
     this.orderStatus = 'En cours',
     this.progress = 24,
     this.dueDate = 'comm008',
     this.orderNumber = 'ooooo',
     this.etatProgression='',
+    this.etat = '',
+    this.startDate = '2023-09-18',
+    this.dateDebut='Aucune Date',
+    this.prix='', // Exemple de date de début
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    DateTime now = DateTime.now();
+    DateTime parsedStartDate = DateFormat('yyyy-MM-dd').parse(startDate); // Convertir la date de début en DateTime
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(80.0),
         child: widgetCommun.CustomAppBar(), // Utilisation du CustomAppBar
       ),
-      body: Container(
-        padding: EdgeInsets.fromLTRB(16.0, 6,16,16),
+      body: SingleChildScrollView( // Utilisation d'un scrollable pour éviter l'overflow
+        padding: EdgeInsets.fromLTRB(16.0, 6, 16, 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -42,7 +53,7 @@ class Iphone1415DetailsCommande extends StatelessWidget {
               height: 200,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: NetworkImage(imageUrl),  // Utilisez AssetImage ici
+                  image: NetworkImage(imageUrl),  // Utilisez AssetImage si nécessaire
                   fit: BoxFit.cover,
                 ),
                 borderRadius: BorderRadius.circular(12.0),
@@ -56,7 +67,6 @@ class Iphone1415DetailsCommande extends StatelessWidget {
               ),
             ),
             SizedBox(height: 16.0),
-            // Ligne de séparation
             Divider(
               color: Colors.grey[300],
               thickness: 1.0,
@@ -73,7 +83,17 @@ class Iphone1415DetailsCommande extends StatelessWidget {
             ),
             SizedBox(height: 8.0),
             Text(
-              'Atelier: $atelierName',
+              'Atelier: Chez Fatou',
+              style: GoogleFonts.getFont(
+                'GFS Didot',
+                fontWeight: FontWeight.w400,
+                fontSize: 18,
+                color: Color(0xFF555555),
+              ),
+            ),
+            SizedBox(height: 8.0),
+            Text(
+              'Couturier: $couturierName',
               style: GoogleFonts.getFont(
                 'GFS Didot',
                 fontWeight: FontWeight.w400,
@@ -87,11 +107,11 @@ class Iphone1415DetailsCommande extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                   decoration: BoxDecoration(
-                    color: _getStatusColor(orderStatus),
+                    color: _getStatusColor(etat),
                     borderRadius: BorderRadius.circular(12.0),
                   ),
                   child: Text(
-                    orderStatus,
+                    etat,
                     style: GoogleFonts.getFont(
                       'GFS Didot',
                       fontWeight: FontWeight.w400,
@@ -100,7 +120,7 @@ class Iphone1415DetailsCommande extends StatelessWidget {
                     ),
                   ),
                 ),
-                if (orderStatus == 'En cours') ...[
+                if (etat == 'En cours') ...[
                   SizedBox(width: 16.0),
                   Expanded(
                     child: LinearProgressIndicator(
@@ -114,7 +134,7 @@ class Iphone1415DetailsCommande extends StatelessWidget {
             ),
             SizedBox(height: 16.0),
             Text(
-              'Date de remise:',
+              'Date de remise: $dueDate',
               style: GoogleFonts.getFont(
                 'GFS Didot',
                 fontWeight: FontWeight.w400,
@@ -122,57 +142,59 @@ class Iphone1415DetailsCommande extends StatelessWidget {
                 color: Color(0xFF555555),
               ),
             ),
-            Text(
-              dueDate,
-              style: GoogleFonts.getFont(
-                'GFS Didot',
-                fontWeight: FontWeight.w400,
-                fontSize: 16,
-                color: Color(0xFF333333),
-              ),
-            ),
-            SizedBox(height: 8.0),
-            Text(
-              'Etat de l\'avancement: ' + etatProgression,
-              style: GoogleFonts.getFont(
-                'GFS Didot',
-                fontWeight: FontWeight.w400,
-                fontSize: 18,
-                color: Color(0xFF555555),
-              ),
-            ),
-            Spacer(),
-            Align(
-              alignment: Alignment.bottomRight,
-              child: GestureDetector(
-                onTap: () {
-                  // Action pour le bouton d'édition
-                },
-                child: Container(
-                  padding: EdgeInsets.all(12.0),
-                  decoration: BoxDecoration(
-                    color: Color(0xFF0D47A1),
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Color(0x40000000),
-                        offset: Offset(0, 4),
-                        blurRadius: 4,
-                      ),
-                    ],
-                  ),
-                  child: Icon(
-                    Icons.edit,
-                    color: Colors.white,
-                    size: 24.0,
-                  ),
+            if (etat == 'Accepter') ...[
+              Text(
+                'Date de début: $dateDebut',
+                style: GoogleFonts.getFont(
+                  'GFS Didot',
+                  fontWeight: FontWeight.w400,
+                  fontSize: 18,
+                  color: Color(0xFF555555),
                 ),
               ),
+              Text(
+                'Prix: $prix',
+                style: GoogleFonts.getFont(
+                  'GFS Didot',
+                  fontWeight: FontWeight.w400,
+                  fontSize: 18,
+                  color: Color(0xFF555555),
+                ),
+              ),
+            ],
+            SizedBox(height: 8.0),
+            Text(
+              'État de l\'avancement: ' + progress.toString(),
+              style: GoogleFonts.getFont(
+                'GFS Didot',
+                fontWeight: FontWeight.w400,
+                fontSize: 18,
+                color: Color(0xFF555555),
+              ),
             ),
+            SizedBox(height: 16.0), // Ajout d'espace avant les boutons
+            if (etat == 'Accepter') ...[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red, // Couleur rouge pour "Annuler"
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context); // Action pour annuler
+                    },
+                    child: Text('Annuler', style: TextStyle(color: Colors.white,)),
+                  ),
+                ],
+              ),
+              SizedBox(height: 16.0),
+            ],
           ],
         ),
       ),
     );
+
   }
 
   Color _getStatusColor(String status) {
@@ -182,6 +204,8 @@ class Iphone1415DetailsCommande extends StatelessWidget {
       case 'Annulée':
         return Colors.red;
       case 'Finie':
+        return Colors.green;
+      case 'Accepter':
         return Colors.green;
       case 'En retard':
         return Colors.orange;

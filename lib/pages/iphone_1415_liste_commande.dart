@@ -15,33 +15,42 @@ import 'package:http/http.dart' as http;
 
 class Order {
   final String imageUrl;
-  final String atelierName;
+  final String couturierName;
   final String status;
   final double? progress; // Pourcentage de travail (null si non applicable)
   final DateTime deliveryDate;
   final String orderNumber;
   final String etatProgression;
+  final String etat;
+  final String dateDebut;
+  final String prix;
 
 
-  Order({
+  Order( {
     required this.imageUrl,
-    required this.atelierName,
+    required this.couturierName,
     required this.status,
     this.progress,
     required this.deliveryDate,
     required this.orderNumber,
-    required this.etatProgression
+    required this.etatProgression,
+    required this.etat,
+    required this.dateDebut,
+    required this.prix,
   });
 
   factory Order.fromJson(Map<String, dynamic> json) {
     return Order(
       imageUrl: json['photoCommande'] ?? 'assets/images/placeholder.png', // Correspond à photoCommande
-      atelierName: json['nomCouturier'] ?? 'Atelier inconnu', // Correspond à nomCouturier
+      couturierName: json['nomCouturier'] ?? 'Atelier inconnu', // Correspond à nomCouturier
       status: json['status'] ?? 'Inconnu',
-      progress: json['progression'] != null ? json['progression'].toDouble() : null, // Correspond à progression
+      progress: json['progression'] != null ? 20.0: null, // Correspond à progression
       deliveryDate: DateTime.parse(json['dateFin']), // Correspond à dateFin
       orderNumber: json['nomCommande'] ?? 'N/A', // Correspond à nomCommande
-      etatProgression: json['etatProgression']
+      etatProgression: json['etatProgression'],
+      etat: json['etat'],
+      dateDebut: json['dateDebut'] ?? 'Aucune Date',
+      prix: json['prix'] ?? '',
     );
   }
 }
@@ -139,23 +148,29 @@ class _Iphone1415ListeCommandeState extends State<Iphone1415ListeCommande> {
                         MaterialPageRoute(
                           builder: (context) => Iphone1415DetailsCommande(
                             imageUrl: order.imageUrl,
-                            atelierName: order.atelierName,
+                            couturierName: order.couturierName,
                             orderStatus: order.status,
                             progress: order.progress?.toInt() ?? 0,
                             dueDate: order.deliveryDate.toString(),
                             orderNumber: order.orderNumber,
-                            etatProgression:order.etatProgression
+                            etatProgression:order.etatProgression,
+                            etat: order.etat,
+                            dateDebut: order.prix ,
+                            prix: order.prix,
                           ),
                         ),
                       );
                     },
                     child: _buildOrderItem(
                       imageUrl: order.imageUrl,
-                      atelierName: order.atelierName,
+                      couturierName: order.couturierName,
                       orderStatus: order.status,
                       deliveryDate: _formatDate(order.deliveryDate),
                       orderNumber: order.orderNumber,
                       progress: order.progress?.toInt(),
+                      etat: order.etat,
+                      dateDebut: order.dateDebut,
+                      prix: order.prix,
                     ),
                   );
                 },
@@ -168,11 +183,14 @@ class _Iphone1415ListeCommandeState extends State<Iphone1415ListeCommande> {
   }
   Widget _buildOrderItem({
     required String imageUrl,
-    required String atelierName,
+    required String couturierName,
     required String orderStatus,
     required String deliveryDate,
     required String orderNumber,
+    required String etat,
     int? progress,
+    required String dateDebut,
+    required String prix,
   }) {
     return Container(
       margin: EdgeInsets.only(bottom: 16),
@@ -215,7 +233,7 @@ class _Iphone1415ListeCommandeState extends State<Iphone1415ListeCommande> {
                 ),
                 SizedBox(height: 4),
                 Text(
-                  atelierName,
+                  couturierName,
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.grey[600],
@@ -223,13 +241,13 @@ class _Iphone1415ListeCommandeState extends State<Iphone1415ListeCommande> {
                 ),
                 SizedBox(height: 8),
                 Text(
-                  'État: $orderStatus',
+                  'État: $etat',
                   style: TextStyle(
                     fontSize: 14,
-                    color: _getStatusColor(orderStatus),
+                    color: _getStatusColor(etat),
                   ),
                 ),
-                if (orderStatus == 'En cours' && progress != null) ...[
+                if (etat == 'En cours' && progress != null) ...[
                   SizedBox(height: 4),
                   Text(
                     'Progression: $progress%',
@@ -241,12 +259,31 @@ class _Iphone1415ListeCommandeState extends State<Iphone1415ListeCommande> {
                 ],
                 SizedBox(height: 4),
                 Text(
+                  'Date de début: $dateDebut',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey[600],
+                  ),
+                ),
+                SizedBox(height: 4),
+                Text(
                   'Date de remise: $deliveryDate',
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.grey[600],
                   ),
                 ),
+                SizedBox(height: 4),
+                if(prix != '')...[
+                  Text(
+                    'Prix: $prix',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                ]
+
               ],
             ),
           ),
@@ -262,6 +299,8 @@ class _Iphone1415ListeCommandeState extends State<Iphone1415ListeCommande> {
       case 'Annulée':
         return Colors.red;
       case 'Finie':
+        return Colors.green;
+      case 'Accepter':
         return Colors.green;
       case 'En retard':
         return Colors.purple;
