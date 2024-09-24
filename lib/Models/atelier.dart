@@ -5,7 +5,7 @@ part 'atelier.g.dart';
 @JsonSerializable()
 class Atelier {
   final String address;
-  final String? profilePhoto;
+  final String profile_photo;
   final String phone;
   final String? tiktok;
   final String? facebook;
@@ -17,7 +17,7 @@ class Atelier {
 
   Atelier({
     required this.address,
-    this.profilePhoto,
+    required this.profile_photo,
     required this.phone,
     this.tiktok,
     this.facebook,

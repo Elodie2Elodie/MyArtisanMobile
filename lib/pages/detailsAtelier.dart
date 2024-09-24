@@ -40,7 +40,7 @@ class _DetailsAtelierPageState extends State<DetailsAtelierPage> {
 
   Future<void> _fetchAtelier() async {
     try {
-      final response = await http.get(Uri.parse('http://192.168.1.5:8000/mobile/atelier/${widget.atelierId}'));
+      final response = await http.get(Uri.parse('http://192.168.1.6:8000/mobile/atelier/${widget.atelierId}'));
 
       if (response.statusCode == 200) {
         final atelierJson = json.decode(response.body);
@@ -59,7 +59,7 @@ class _DetailsAtelierPageState extends State<DetailsAtelierPage> {
     try {
       // Remplace par la méthode ou l'API que tu utilises pour obtenir les tenues
       // Exemple d'appel d'API (tu peux utiliser `http` ou `dio` par exemple)
-      final response = await http.get(Uri.parse('http://192.168.1.5:8000/mobile/tenues/${widget.atelierId}'));
+      final response = await http.get(Uri.parse('http://192.168.1.6:8000/mobile/tenues/${widget.atelierId}'));
 
       print(response.body);
       if (response.statusCode == 200) {
@@ -80,7 +80,7 @@ class _DetailsAtelierPageState extends State<DetailsAtelierPage> {
 
   Future<void> fetchCommentaires() async {
     try {
-      final response = await http.get(Uri.parse('http://192.168.1.5:8000/mobile/atelier/avis/${widget.atelierId}'));
+      final response = await http.get(Uri.parse('http://192.168.1.6:8000/mobile/atelier/avis/${widget.atelierId}'));
 
       if (response.statusCode == 200) {
         List<dynamic> commentairesJson = json.decode(response.body);
@@ -181,6 +181,10 @@ class _DetailsAtelierPageState extends State<DetailsAtelierPage> {
       ),
     );
   }
+
+  // Container(
+  // child: HorizontalButtonList(),
+  // ),
 
   Widget _buildDetailsAtelierSection(atelier) {
     print(commentaires);

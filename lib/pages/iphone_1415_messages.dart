@@ -1,99 +1,140 @@
+import 'dart:convert';
+
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/Models/contactMessage.dart';
 import 'package:flutter_app/pages/ecrire_message.dart';
 import 'package:flutter_app/pages/router.gr.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_app/pages/widget_commun.dart' as widgetCommun;
 import 'package:auto_route/auto_route.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../Models/utilisateurs.dart';
+
+
+
+// Fonction pour récupérer l'utilisateur
+Future<String?> getUser() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? userJson = prefs.getString('user');
+  if (userJson != null) {
+    return User.fromJson(json.decode(userJson)).id;
+  } else {
+    return null;
+  }
+}
 
 @RoutePage()
-class ListeMessage extends StatelessWidget {
+class ListeMessage extends StatefulWidget {
+  final String userId=''; // Nouveau paramètre
+
+  @override
+  _ListeMessageState createState() => _ListeMessageState();
+}
+
+class _ListeMessageState extends State<ListeMessage> {
+  Future<List<ContactMessage>>? futureContacts;
+  String? userId2;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserId();
+
+  }
+
+  Future<void> _loadUserId() async {
+    userId2 = await getUser();
+    if (userId2 == null) {
+      print("ID utilisateur non trouvé.");
+    } else {
+      futureContacts = fetchContacts(userId2!);
+      setState(() {});
+      print("ID utilisateur : $userId2");
+    }
+  }
+
+  Future<List<ContactMessage>> fetchContacts(String userId) async {
+    final response = await http.get(
+        Uri.parse('http://192.168.1.6:8000/mobile/listeContactMessagerie/xv0Q2yTVEUNQOtpk4gs8zXrv7x43'));
+
+    if (response.statusCode == 200) {
+      List<dynamic> data = jsonDecode(response.body);
+      return data.map((json) => ContactMessage.fromJson(json)).toList();
+    } else {
+      throw Exception(response.statusCode);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(80.0),
-        child: widgetCommun.CustomAppBar(), // Utilisation du CustomAppBar
+        child: widgetCommun.CustomAppBar(),
       ),
-      body: Container(
-        child: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            // Conteneur pour le champ de recherche
-            Positioned(
-              top: 0, // Positionnez-le en haut
-              left: 0,
-              right: 0,
-              child: Container(
-                margin: EdgeInsets.fromLTRB(0,20,0,20), // Ajustez la marge selon besoin
-                child: Center(
-                  child: _buildSearchTextField('Rechercher'),
-                ),
+      body: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              margin: EdgeInsets.fromLTRB(0, 20, 0, 20),
+              child: Center(
+                child: _buildSearchTextField('Rechercher'),
               ),
             ),
-            // Conteneur pour la liste
-            Positioned(
-              top: 100, // Ajustez cette valeur pour commencer la liste sous le champ de recherche
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: ListView(
-                children: [
-                  CustomListItem(
-                    imagePath: 'assets/images/wave.png',
-                    title: 'Awa Diouf',
-                    subtitle: 'Non',
-                    time: '6h:00',
-                    onTap: () {
-
-                      // Ajoutez votre action ici
-                      context.router.push(
-                        RouteMessagerie(),
+          ),
+          Positioned(
+            top: 100,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: FutureBuilder<List<ContactMessage>>(
+              future: futureContacts,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Erreur: ${snapshot.error}'));
+                } else if (snapshot.hasData) {
+                  final contacts = snapshot.data!;
+                  return ListView.builder(
+                    itemCount: contacts.length,
+                    itemBuilder: (context, index) {
+                      final contact = contacts[index];
+                      return CustomListItem(
+                        imagePath: contact.photoProfil,
+                        title: '${contact.nom} ${contact.prenom}',
+                        subtitle: contact.message,
+                        time: contact.messageCount.toString(),
+                        onTap: () {
+                          context.router.push(RouteMessagerie(userId: userId2,contactId: contact.uid,nom: contact.nom + ' ' + contact.prenom, profilImage: contact.photoProfil));
+                        },
                       );
                     },
-                  ),
-                  CustomListItem(
-                    imagePath: 'assets/images/wave.png',
-                    title: 'Awa Diouf',
-                    subtitle: 'Non',
-                    time: '6h:00',
-                    onTap: () {
-                      context.router.push(
-                        RouteMessagerie(),
-                      );
-                    },
-                  ),
-                  CustomListItem(
-                    imagePath: 'assets/images/wave.png',
-                    title: 'Awa Diouf',
-                    subtitle: 'Non',
-                    time: '6h:00',
-                    onTap: () {
-                      context.router.push(
-                        RouteMessagerie(),
-                      );
-                    },
-                  ),
-                  // Ajoutez plus de CustomListItem ici
-                ],
-              ),
-            ),
-            PositionedIconButton(
-              iconPath: 'assets/vectors/vector_139_x2.svg',
-              onTap: () {
-                context.router.push(
-                  ListeContact(),
-                );
+                  );
+                } else {
+                  return Center(child: Text('Aucun contact disponible'));
+                }
               },
             ),
-          ],
-        ),
+          ),
+          FloatingMessageButton(
+            onTap: () {
+              context.router.push(ListeContact());
+            },
+          ),
+        ],
       ),
     );
   }
-
 }
 
 class CustomListItem extends StatelessWidget {
@@ -122,8 +163,6 @@ class CustomListItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
                   margin: EdgeInsets.fromLTRB(0, 0, 16, 0),
@@ -133,47 +172,29 @@ class CustomListItem extends StatelessWidget {
                     borderRadius: BorderRadius.circular(27),
                     image: DecorationImage(
                       fit: BoxFit.cover,
-                      image: AssetImage(imagePath),
+                      image: NetworkImage(imagePath),
                     ),
                   ),
                 ),
                 Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      margin: EdgeInsets.fromLTRB(0, 0, 0, 8),
-                      child: Text(
-                        title,
-                        style: GoogleFonts.fenix(
-                          fontWeight: FontWeight.w400,
-                          fontSize: 16,
-                          color: Color(0xFF1B1A57),
-                        ),
+                    Text(
+                      title,
+                      style: GoogleFonts.fenix(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 16,
+                        color: Color(0xFF1B1A57),
                       ),
                     ),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          margin: EdgeInsets.fromLTRB(0, 1, 4, 1),
-                          child: Opacity(
-                            opacity: 0.6,
-                            child: Container(
-                              width: 16,
-                              height: 16,
-                              padding: EdgeInsets.fromLTRB(1.6, 4.9, 1.5, 4.4),
-                              child: SizedBox(
-                                width: 12.9,
-                                height: 6.7,
-                                child: SvgPicture.asset(
-                                  'assets/vectors/vector_438_x2.svg',
-                                ),
-                              ),
-                            ),
-                          ),
+                        SvgPicture.asset(
+                          'assets/vectors/vector_438_x2.svg',
+                          width: 16,
+                          height: 16,
                         ),
+                        SizedBox(width: 4),
                         Text(
                           subtitle,
                           style: GoogleFonts.fenix(
@@ -188,18 +209,15 @@ class CustomListItem extends StatelessWidget {
                 ),
               ],
             ),
-            Container(
-              margin: EdgeInsets.fromLTRB(0, 1, 0, 30),
-              child: Opacity(
-                opacity: 0.6,
-                child: Text(
-                  time,
-                  style: GoogleFonts.getFont(
-                    'GFS Didot',
-                    fontWeight: FontWeight.w400,
-                    fontSize: 14,
-                    color: Color(0xFF333333),
-                  ),
+            Opacity(
+              opacity: 0.6,
+              child: Text(
+                time,
+                style: GoogleFonts.getFont(
+                  'GFS Didot',
+                  fontWeight: FontWeight.w400,
+                  fontSize: 14,
+                  color: Colors.black,
                 ),
               ),
             ),
@@ -211,47 +229,40 @@ class CustomListItem extends StatelessWidget {
 }
 
 Widget _buildSearchTextField(String labelText) {
-  return Padding(
-    padding: const EdgeInsets.only(bottom: 16.0),
-    child: Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8.0), // Bordures arrondies
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2), // Ombre noire
-            spreadRadius: 1,
-            blurRadius: 4,
-            offset: Offset(0, 2), // Déplacement de l'ombre
-          ),
-        ],
-      ),
-      width: 300, // Largeur réduite
-      child: TextField(
-        decoration: InputDecoration(
-          suffixIcon: Padding(
-            padding: const EdgeInsets.only(right: 16.0),
-            child: Icon(
-              Icons.search,
-              color: Color(0xFF0D47A1),
-            ),
-          ),
-          labelText: labelText,
-          labelStyle: TextStyle(
-            color: Colors.black,
-          ),
-          enabledBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: Color(0xFF0D47A1), width: 1.0), // Ligne bleue foncée
-          ),
-          focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: Color(0xFF0D47A1), width: 1.0), // Ligne bleue foncée lorsqu'en focus
-          ),
-          contentPadding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0), // Espacement interne
+  return Container(
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(8.0),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.2),
+          spreadRadius: 1,
+          blurRadius: 4,
+          offset: Offset(0, 2),
         ),
+      ],
+    ),
+    width: 300,
+    child: TextField(
+      decoration: InputDecoration(
+        suffixIcon: Icon(
+          Icons.search,
+          color: Color(0xFF0D47A1),
+        ),
+        labelText: labelText,
+        labelStyle: TextStyle(color: Colors.black),
+        enabledBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: Color(0xFF0D47A1), width: 1.0),
+        ),
+        focusedBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: Color(0xFF0D47A1), width: 1.0),
+        ),
+        contentPadding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
       ),
     ),
   );
 }
+
 
 class PositionedIconButton extends StatelessWidget {
   final String iconPath;
@@ -308,7 +319,7 @@ class PositionedIconButton extends StatelessWidget {
 class CustomAppBar extends StatelessWidget {
   final String logoPath;
 
-  const CustomAppBar({super.key, this.logoPath = 'assets/images/rectangle_34625156.png'});
+  const CustomAppBar({super.key, this.logoPath = 'assets/images/my_artist_logo_2.png'});
 
   @override
   Widget build(BuildContext context) {
@@ -377,6 +388,46 @@ class CustomAppBar extends StatelessWidget {
               ],
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class FloatingMessageButton extends StatelessWidget {
+  final VoidCallback onTap;
+
+  const FloatingMessageButton({Key? key, required this.onTap}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      right: 16, // Ajuste la position à droite
+      bottom: 16, // Ajuste la position en bas
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          decoration: BoxDecoration(
+            color: Color(0xFF11477E), // Couleur de fond du bouton
+            shape: BoxShape.circle, // Forme circulaire
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.2), // Ombre noire
+                spreadRadius: 2,
+                blurRadius: 10,
+                offset: Offset(0, 4), // Décalage de l'ombre
+              ),
+            ],
+          ),
+          width: 56, // Largeur du bouton
+          height: 56, // Hauteur du bouton
+          child: Center(
+            child: Icon(
+              Icons.message_rounded,
+              color: Colors.white, // Couleur de l'icône
+              size: 24, // Taille de l'icône
+            ),
+          ),
         ),
       ),
     );

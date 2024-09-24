@@ -63,8 +63,8 @@ class _InscriptionState extends State<Inscription> {
       // Envoyer les données à l'API
       // Utilisez un package comme http pour envoyer une requête POST
       // Préparer la requête multipart
-      final uri = Uri.parse('http://192.168.1.5:8000/mobile/register');
-      // http.post(Uri.parse('http://192.168.1.5:8000/mobile/register'), body: formData);
+      final uri = Uri.parse('http://192.168.1.6:8000/mobile/register');
+      // http.post(Uri.parse('http://192.168.1.6:8000/mobile/register'), body: formData);
       var request = http.MultipartRequest('POST', uri)
         ..fields['firstName'] = prenom
         ..fields['lastName'] = nom

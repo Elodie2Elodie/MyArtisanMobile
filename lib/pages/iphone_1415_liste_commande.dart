@@ -92,7 +92,7 @@ class _Iphone1415ListeCommandeState extends State<Iphone1415ListeCommande> {
   Widget build(BuildContext context) {
 
     Future<List<Order>> fetchOrders(String? userId) async {
-      final response = await http.get(Uri.parse('http://192.168.1.5:8000/mobile/getCommandeById/$userId'));
+      final response = await http.get(Uri.parse('http://192.168.1.6:8000/mobile/getCommandeById/$userId'));
 
       if (response.statusCode == 200) {
         // Si la requête a été réussie, on décode les données JSON

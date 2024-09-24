@@ -79,7 +79,7 @@ class _ScrollableListWithQuantitiesState extends State<Panierr> with WidgetsBind
     final panierItems = panierJson.map((item) => PanierItem.fromJson(jsonDecode(item))).toList();
 
     final response = await http.post(
-      Uri.parse('http://192.168.1.5:8000/mobile/panier_syncro'),
+      Uri.parse('http://192.168.1.6:8000/mobile/panier_syncro'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'user_id': userId, // Remplacez par l'ID utilisateur réel
@@ -106,7 +106,7 @@ class _ScrollableListWithQuantitiesState extends State<Panierr> with WidgetsBind
         PanierItem.fromJson(jsonDecode(item))).toList();
 
     final response = await http.post(
-      Uri.parse('http://192.168.1.5:8000/mobile/panier_syncroValider'),
+      Uri.parse('http://192.168.1.6:8000/mobile/panier_syncroValider'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'user_id': userId, // Remplacez par l'ID utilisateur réel

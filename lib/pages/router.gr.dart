@@ -168,9 +168,15 @@ abstract class $AppRouter extends _i26.RootStackRouter {
       );
     },
     RouteMessagerie.name: (routeData) {
+      final args = routeData.argsAs<RouteMessagerieArgs>();
       return _i26.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: _i21.PageMessagerie(),
+        child: _i21.PageMessagerie(
+          contactId: args.contactId,
+          userId: args.userId,
+          nom: args.nom,
+          profilImage: args.profilImage,
+        ),
       );
     },
     RouteParametres.name: (routeData) {
@@ -536,16 +542,50 @@ class MonProfilArgs {
 
 /// generated route for
 /// [_i21.PageMessagerie]
-class RouteMessagerie extends _i26.PageRouteInfo<void> {
-  const RouteMessagerie({List<_i26.PageRouteInfo>? children})
-      : super(
+class RouteMessagerie extends _i26.PageRouteInfo<RouteMessagerieArgs> {
+  RouteMessagerie({
+    required String contactId,
+    required String? userId,
+    required String nom,
+    required String profilImage,
+    List<_i26.PageRouteInfo>? children,
+  }) : super(
           RouteMessagerie.name,
+          args: RouteMessagerieArgs(
+            contactId: contactId,
+            userId: userId,
+            nom: nom,
+            profilImage: profilImage,
+          ),
           initialChildren: children,
         );
 
   static const String name = 'RouteMessagerie';
 
-  static const _i26.PageInfo<void> page = _i26.PageInfo<void>(name);
+  static const _i26.PageInfo<RouteMessagerieArgs> page =
+      _i26.PageInfo<RouteMessagerieArgs>(name);
+}
+
+class RouteMessagerieArgs {
+  const RouteMessagerieArgs({
+    required this.contactId,
+    required this.userId,
+    required this.nom,
+    required this.profilImage,
+  });
+
+  final String contactId;
+
+  final String? userId;
+
+  final String nom;
+
+  final String profilImage;
+
+  @override
+  String toString() {
+    return 'RouteMessagerieArgs{contactId: $contactId, userId: $userId, nom: $nom, profilImage: $profilImage}';
+  }
 }
 
 /// generated route for

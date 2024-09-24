@@ -11,8 +11,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class CustomAppBar extends StatelessWidget {
   final String logoPath;
+  final String baseUrl='http://192.168.1.6:8000/mobile';
 
-  const CustomAppBar({super.key, this.logoPath = 'assets/images/rectangle_34625156.png'});
+  const CustomAppBar({super.key, this.logoPath = 'assets/images/my_artist_logo_2.png'});
 
   @override
   Widget build(BuildContext context) {

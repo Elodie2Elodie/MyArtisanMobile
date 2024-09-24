@@ -85,7 +85,7 @@ class _AjoutCommandeState extends State<AjoutCommande> {
     }
 
     // Préparer la requête multipart
-    final uri = Uri.parse('http://192.168.1.5:8000/mobile/createCommande');
+    final uri = Uri.parse('http://192.168.1.6:8000/mobile/createCommande');
     var request = http.MultipartRequest('POST', uri)
       ..fields['dateFin'] = dateFin
       ..fields['description'] = description

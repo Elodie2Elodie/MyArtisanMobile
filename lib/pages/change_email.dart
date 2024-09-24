@@ -55,7 +55,7 @@ class _ChangerEmailState extends State<ChangerEmail> {
     final String currentPassword = _currentPasswordController.text;
     final String? currentUserId = userId; // Tu peux remplacer par le vrai userId
 
-    final url = Uri.parse('http://192.168.1.5:8000/mobile/changeEmail');
+    final url = Uri.parse('http://192.168.1.6:8000/mobile/changeEmail');
 
     try {
       final response = await http.post(

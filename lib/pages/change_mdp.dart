@@ -66,7 +66,7 @@ class _ChangerMotDePasseState extends State<ChangerMotDePasse> {
       return;
     }
 
-    final url = Uri.parse('http://192.168.1.5:8000/mobile/changePassword');
+    final url = Uri.parse('http://192.168.1.6:8000/mobile/changePassword');
 
     try {
       final response = await http.post(

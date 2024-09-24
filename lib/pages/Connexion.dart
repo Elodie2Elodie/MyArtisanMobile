@@ -44,7 +44,7 @@ class _ConnexionState extends State<Connexion> {
 
   // Fonction pour envoyer les données à l'API
   Future<void> _login() async {
-    final String apiUrl = 'http://192.168.1.5:8000/mobile/login';
+    final String apiUrl = 'http://192.168.1.6:8000/mobile/login';
 
     // Récupération des données du formulaire
     String identifiant = _identifiantController.text;

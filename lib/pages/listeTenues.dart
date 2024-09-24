@@ -54,9 +54,7 @@ class ListeAtelier extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Container(
-                    child: HorizontalButtonList(),
-                  ),
+
                   Expanded(
                     child: FutureBuilder<List<Atelier>>(
                       future: apiService.fetchAteliers(),
@@ -79,7 +77,7 @@ class ListeAtelier extends StatelessWidget {
                             itemBuilder: (context, index) {
                               final atelier = snapshot.data![index];
                               return CustomImageCard(
-                                imagePath: atelier.profilePhoto ?? 'assets/images/rectangle_34625156.png',
+                                imagePath: atelier.profile_photo ?? 'assets/images/rectangle_34625156.png',
                                 titre: atelier.name ?? 'Nom de l\'atelier',
                                 indexe: index,
                                 adressseAtelier: atelier.address,
@@ -147,7 +145,7 @@ class CustomImageCard extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15), // Coins arrondis
                 image: DecorationImage(
-                  image: AssetImage(imagePath), // Remplacez par le chemin de votre image
+                  image: NetworkImage(imagePath), // Remplacez par le chemin de votre image
                   fit: BoxFit.cover,
                 ),
               ),

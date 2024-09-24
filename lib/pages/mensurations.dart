@@ -75,7 +75,7 @@ class _MensurationsState extends State<Mensurations> {
 
   Future<void> _fetchMensurations() async {
     try {
-      final response = await http.get(Uri.parse('http://192.168.1.5:8000/mobile/getMensurations/${userId}'));
+      final response = await http.get(Uri.parse('http://192.168.1.6:8000/mobile/getMensurations/${userId}'));
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
@@ -123,7 +123,7 @@ class _MensurationsState extends State<Mensurations> {
 
   // Fonction pour envoyer les données à l'API
   Future<void> _submitMensurations() async {
-    final url = Uri.parse('http://192.168.1.5:8000/mobile/createMensurations');
+    final url = Uri.parse('http://192.168.1.6:8000/mobile/createMensurations');
 
     final Map<String, dynamic> data = {
       'tour_poitrine': poitrineController.text,

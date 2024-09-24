@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_app/Models/atelier.dart'; // Assure-toi que le chemin est correct
 
 class ApiService {
-  final String apiUrl = 'http://192.168.1.5:8000/mobile';
+  final String apiUrl = 'http://192.168.1.6:8000/mobile';
 
   Future<List<Atelier>> fetchAteliers() async {
     final response = await http.get(Uri.parse('$apiUrl')); // Modifie l'URL selon ton API
@@ -12,7 +12,8 @@ class ApiService {
       List<dynamic> jsonData = json.decode(response.body);
       return jsonData.map((json) => Atelier.fromJson(json)).toList();
     } else {
-      throw Exception('Failed to load ateliers');
+      print(response.body);
+      throw Exception(response.statusCode);
     }
   }
 }

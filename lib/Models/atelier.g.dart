@@ -8,7 +8,7 @@ part of 'atelier.dart';
 
 Atelier _$AtelierFromJson(Map<String, dynamic> json) => Atelier(
       address: json['address'] as String,
-      profilePhoto: json['profilePhoto'] as String?,
+      profile_photo: json['profile_photo'] as String,
       phone: json['phone'] as String,
       tiktok: json['tiktok'] as String?,
       facebook: json['facebook'] as String?,
@@ -21,7 +21,7 @@ Atelier _$AtelierFromJson(Map<String, dynamic> json) => Atelier(
 
 Map<String, dynamic> _$AtelierToJson(Atelier instance) => <String, dynamic>{
       'address': instance.address,
-      'profilePhoto': instance.profilePhoto,
+      'profile_photo': instance.profile_photo,
       'phone': instance.phone,
       'tiktok': instance.tiktok,
       'facebook': instance.facebook,

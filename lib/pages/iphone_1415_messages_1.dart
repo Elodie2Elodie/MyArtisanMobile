@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -5,100 +7,181 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_app/pages/router.gr.dart';
 import 'package:flutter_app/pages/widget_commun.dart' as widgetCommun;
 import 'package:auto_route/auto_route.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../Models/contact.dart';
+import '../Models/utilisateurs.dart';
+
+// Fonction pour récupérer l'utilisateur
+Future<String?> getUser() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? userJson = prefs.getString('user');
+  if (userJson != null) {
+    return User.fromJson(json.decode(userJson)).id;
+  } else {
+    return null;
+  }
+}
 
 @RoutePage()
-class ListeContact extends StatelessWidget {
+class ListeContact extends StatefulWidget {
+  @override
+  _ListeContactState createState() => _ListeContactState();
+}
+
+class _ListeContactState extends State<ListeContact> {
+  Future<List<UserContact>>? futureContacts;
+  late final String? userId;
+
+  @override
+  void initState() {
+    super.initState();
+    // Appelle de fetchContacts avec l'ID utilisateur fourni
+    futureContacts = fetchContacts();
+    _loadUserId();
+    // print(futureContacts?[0]);
+  }
+
+  // Méthode asynchrone pour charger l'ID utilisateur
+    Future<void> _loadUserId() async {
+      userId = await getUser();  // Récupération de l'ID utilisateur
+      if (userId == null) {
+        // Gérer le cas où l'ID utilisateur n'est pas disponible
+        print("ID utilisateur non trouvé.");
+      } else {
+        print("ID utilisateur : $userId");
+      }
+    }
+
+  Future<List<UserContact>> fetchContacts() async {
+    final response = await http.get(Uri.parse('http://192.168.1.6:8000/mobile/listeContact'));
+
+    if (response.statusCode == 200) {
+      List<dynamic> data = jsonDecode(response.body);
+      // print('oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo');
+
+      // Transforme chaque entrée en UserContact
+      List<UserContact> contacts = [];
+      for (var entry in data) {
+        var jsonUser = entry[0]; // Premier élément (données utilisateur)
+        var jsonContact = entry[1]; // Deuxième élément (données contact)
+
+
+        contacts.add(UserContact.fromJson(jsonUser, jsonContact));
+      }
+      print(contacts);
+      return contacts;
+    } else {
+      print(response.body);
+      throw Exception('Failed to load contacts: ${response.statusCode}');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(80.0),
-        child: widgetCommun.CustomAppBar(), // Utilisation du CustomAppBar
+        child: widgetCommun.CustomAppBar(),
       ),
       body: Stack(
         clipBehavior: Clip.none,
         children: [
           // Conteneur pour le champ de recherche
           Positioned(
-            top: 0, // Positionnez-le en haut
+            top: 0,
             left: 0,
             right: 0,
             child: Container(
-              margin: EdgeInsets.fromLTRB(0,20,0,20), // Ajustez la marge selon besoin
+              margin: EdgeInsets.fromLTRB(0, 20, 0, 20),
               child: Center(
                 child: _buildSearchTextField('Rechercher'),
               ),
             ),
           ),
-          // Conteneur pour la liste
+          // Conteneur pour la liste des contacts
           Positioned(
-            top: 100, // Ajustez cette valeur pour commencer la liste sous le champ de recherche
+            top: 100,
             left: 0,
             right: 0,
             bottom: 0,
-            child: ListView(
-              children: [
-                ContactItem(
-                  imagePath: 'assets/images/wave.png',
-                  contactName: 'Jane Smith',
-                  lastInteractionTime: '15h:45',
-                  onTap: () {
-                    print("Jane Smith tapped!");
-                  },
-                ),
-                ContactItem(
-                  imagePath: 'assets/images/wave.png',
-                  contactName: 'Jane Smith',
-                  lastInteractionTime: '15h:45',
-                  onTap: () {
-                    print("Jane Smith tapped!");
-                  },
-                ),
-                ContactItem(
-                  imagePath: 'assets/images/wave.png',
-                  contactName: 'Jane Smith',
-                  lastInteractionTime: '15h:45',
-                  onTap: () {
-                    print("Jane Smith tapped!");
-                  },
-                ),
-                // Ajoutez plus de CustomListItem ici
-              ],
+            child: FutureBuilder<List<UserContact>>(
+              future: futureContacts, // Appel de la future qui retourne les contacts
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  // Affiche un loader pendant le chargement des données
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  // Gère les erreurs si le chargement échoue
+                  return Center(child: Text('Erreur: ${snapshot.error}'));
+                } else if (snapshot.hasData) {
+                  final contacts = snapshot.data!;
+                  return ListView.builder(
+                    itemCount: contacts.length,
+                    itemBuilder: (context, index) {
+                      final contact = contacts[index];
+                      return ContactItem(
+                        imagePath: contact.photoProfil,
+                        contactName: contact.nom + ' ' + contact.prenom ,
+                        lastInteractionTime: contact.name,
+                        messageCount: contact.role,
+                        onTap: () {
+                          print("${contact.prenom} tapped!");
+                          // Naviguer vers la page de messagerie
+                          context.router.push(RouteMessagerie(contactId: contact.uid,userId: userId,nom: contact.nom + ' ' + contact.prenom, profilImage: contact.photoProfil));
+                        },
+                      );
+                    },
+                  );
+                } else {
+                  return Center(child: Text('Aucun contact disponible'));
+                }
+              },
             ),
           ),
         ],
       ),
     );
   }
-
 }
 
 class ContactItem extends StatelessWidget {
   final String imagePath;
   final String contactName;
   final String lastInteractionTime;
+  final String messageCount;
   final VoidCallback onTap;
 
   ContactItem({
     required this.imagePath,
     required this.contactName,
     required this.lastInteractionTime,
+    required this.messageCount,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: (){
-        context.router.push(
-          RouteMessagerie(),
-        );
-      },
+      onTap: onTap,
       child: Container(
+        height: 85,
+        decoration: BoxDecoration(
+          color: Colors.white, // Si vous souhaitez ajouter une couleur de fond
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1), // Couleur de l'ombre
+              spreadRadius: 2, // Diffusion de l'ombre
+              blurRadius: 6, // Flou de l'ombre
+              offset: Offset(0, 3), // Position de l'ombre (x, y)
+            ),
+          ],
+        ),
         margin: EdgeInsets.fromLTRB(9, 20, 20, 0),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Row(
@@ -111,27 +194,41 @@ class ContactItem extends StatelessWidget {
                     borderRadius: BorderRadius.circular(24),
                     image: DecorationImage(
                       fit: BoxFit.cover,
-                      image: AssetImage(imagePath),
+                      image: NetworkImage(imagePath),
                     ),
                   ),
                 ),
-                Text(
-                  contactName,
-                  style: GoogleFonts.fenix(
-                    fontWeight: FontWeight.w400,
-                    fontSize: 16,
-                    color: Color(0xFF1B1A57),
-                  ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      contactName,
+                      style: GoogleFonts.fenix(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 16,
+                        color: Color(0xFF1B1A57),
+                      ),
+                    ),
+                    SizedBox(height: 4), // Espacement entre le nom et le temps
+                    Text(
+                      lastInteractionTime,
+                      style: GoogleFonts.fenix(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
             Text(
-              lastInteractionTime,
-              style: GoogleFonts.getFont(
-                'GFS Didot',
+              messageCount,
+              style: GoogleFonts.fenix(
                 fontWeight: FontWeight.w400,
-                fontSize: 14,
-                color: Color(0xFF333333),
+                fontSize: 16,
+                color: Colors.black,
               ),
             ),
           ],
@@ -140,6 +237,7 @@ class ContactItem extends StatelessWidget {
     );
   }
 }
+
 
 Widget _buildSearchTextField(String labelText) {
   return Padding(
